@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nullified Depths | Beta 0.1</title>
+    <script src="stage.js"></script>
+    <script src="main.js"></script>
+    <script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/vue/2.6.12/vue.min.js"></script>
+    <script src="render.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body onload="UpdateOnLoad()">
+    <div id="app" class="bg">
+        <div id="header" class="header">
+            <div class="header-text" style="width: 470px;">Nullified Depths</div>
+            <div style="font-size: 22px;">Beta 0.1</div>
+            <div style="width: 450px;"></div>
+            <button class="smallbutton" style="position: relative;"
+                onclick="DisplaySaveOptions()">Save</button>
+            <button class="smallbutton" style="position: relative;"
+                onclick="DisplayUpdateLog()">Log</button>
+        </div>
+        <div id="maingame" class="maingame">
+            <div class="stageselect">
+                <button id="button0" onclick="SetTab(0)" class="stagebutton">
+                    <div id="dp" class="buttontext">Depths</div>
+                </button>
+                <button id="button1" onclick="SetTab(1)" class="stagebutton">
+                    <div class="buttontext">Space</div>
+                    <div id="spf-side" class="buttonminitext">{{formatNumber(Player.stage1.spacefoam)}} space foams
+                    </div>
+                </button>
+                <button id="button2" onclick="SetTab(2)" class="stagebutton">
+                    <div class="buttontext">Time</div>
+                    <div id="pt-side" class="buttonminitext">0 Planck Time
+                    </div>
+                </button>
+                <button id="button3" onclick="SetTab(3)" class="stagebutton">
+                    <div class="buttontext">Subatomic</div>
+                    <div id="mt-side" class="buttonminitext">0 Relative Mass
+                    </div>
+                </button>
+            </div>
+            <div class="container">
+                <div id="stage0" class="stage">Placeholder</div>
+                <div id="stage1" class="stage">
+                    <div id="op1"></div>
+                    <div style="height: 70px;"></div>
+                    <div>
+                        <span class="buttontext"> You have </span>
+                        <span id="spf"
+                            style="color: #eec; font-size: 30px;">{{formatNumber(Player.stage1.spacefoam)}}</span>
+                        <span class="buttontext"> Space Foams. </span>
+                    </div>
+                    <div style="height: 70px;"></div>
+                    <article id="buildings" style="width: 80%;">
+                        <template v-for="(building, index) in Player.stage1.buildings">
+                            <section class="row" :id="gets1Buildingid0(index)">
+                                <img :src="`./pic/${gets1BuildingImage(index)}`" :alt="gets1BuildingName(index)">
+                                <div style="font-size: 20px; width: 25%;" :id="gets1Buildingid(index)"> {{
+                                    gets1BuildingName(index) }}: {{ formatNumber(building) }}</div>
+                                <div style="font-size: 20px; width: 30%;" :id="gets1Buildingid2(index)"> Producing: {{
+                                    formatNumber(s1prod(index)) }}</div>
+                                <button :id="gets1Buildingid3(index)" @click="purchases1buildings(index)">Buy {{
+                                    currents1purchase(index).num }} | Cost: {{
+                                    formatNumber(currents1purchase(index).cost) }}</button>
+                                <button :id="gets1Buildingid4(index)" @click="swapauto(index)">Auto</button>
+                            </section>
+                            <section style="height: 10px;" :id="gets1Buildingid1(index)"></section>
+                        </template>
+                        <section class="row">
+                            <div style="width: 32px;"></div>
+                            <div style="width: 25%;"></div>
+                            <div style="width: 30%;"></div>
+                            <button id="s1bulk" class="purchasebutton-nafford" @click="changeBuy()">{{ Player.buy == 0 ?
+                                "Buy 1" : (Player.buy == 1 ? "Buy 10" : "Buy Max") }}</button>
+                        </section>
+                    </article>
+                    <template>
+                        <table class="image-table">
+                            <tbody>
+                                <tr v-for="row in s1rows" :key="row"
+                                    style="display: flex; flex-direction: row; justify-content: center;">
+                                    <td v-for="(image, index) in s1images.slice((row - 1) * 8, row * 8)" :key="index">
+                                        <div class="image-container">
+                                            <img :src="image" :alt="'Image ' + (index + 1 + (row - 1) * 8)"
+                                                class="grid-image" @mouseenter="hovers1upgrades(index+(row-1)*8)"
+                                                @click="purchases1upgrades(index+(row-1)*8)" />
+                                            <div class="mask" :id="getMask(index+row*8-8)"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </template>
+                    <div style="height: 30px;"></div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div id="s1upgradename"></div>
+                        <div id="s1upgradecost"></div>
+                        <div id="s1upgradedesc"></div>
+                        <div id="s1upgradeeff">Hover over an upgrade to see its effect!</div>
+                    </div>
+                    <div style="height: 70px;"></div>
+                </div>
+                <div id="stage2" class="stage">
+                    <div id="op2"></div>
+                    <div style="height: 70px;"></div>
+                    <div>
+                        <span class="buttontext"> You have </span>
+                        <span id="pt"
+                            style="color: #eec; font-size: 30px;">{{formatNumber(Player.stage1.spacefoam)}}</span>
+                        <span class="buttontext"> Planck Time. </span>
+                    </div>
+                    <div>You cannot create Structures within Time. However, you can reset your time to gain bonuses.
+                    </div>
+                    <div style="height: 20px;"></div>
+                    <button id="texbutton" onclick="s2Prestige()" class="prestigebutton">
+                        <div id="texbuttontext" class="buttontext">Placeholder</div>
+                    </button>
+                    <div style="height: 20px;"></div>
+                    <div id="tex">You have 0 Time Extensions, giving a 1.00x bonus to Planck Time production.</div>
+                    <div style="height: 20px;"></div>
+                    <template>
+                        <table class="image-table">
+                            <tbody>
+                                <tr v-for="row in s2rows" :key="row"
+                                    style="display: flex; flex-direction: row; justify-content: center;">
+                                    <td v-for="(image, index) in s2images.slice((row - 1) * 8, row * 8)" :key="index">
+                                        <div class="image-container">
+                                            <img :src="image" :alt="'Image ' + (index + 1 + (row - 1) * 8)"
+                                                class="grid-image" @mouseenter="hovers2upgrades(index+(row-1)*8)"
+                                                @click="purchases2upgrades(index+(row-1)*8)" />
+                                            <div class="mask" :id="gets2Mask(index+row*8-8)"></div>
+                                            <div class="mask2" :id="gets2Mask2(index+row*8-8)"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </template>
+                    <div style="height: 30px;"></div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div id="s2upgradename"></div>
+                        <div id="s2upgradecost"></div>
+                        <div id="s2upgradedesc"></div>
+                        <div id="s2upgradeeff">Hover over an upgrade to see its effect!</div>
+                    </div>
+                    <div style="height: 70px;"></div>
+                </div>
+                <div id="stage3" class="stage">
+                    <div id="op3"></div>
+                    <div style="height: 70px;"></div>
+                    <div style="text-align: center;">
+                        <span class="buttontext"> You have </span>
+                        <span id="mt"
+                            style="color: #eec; font-size: 30px;">{{formatNumber(Player.stage1.spacefoam)}}</span>
+                        <span class="buttontext"> Relative Mass. </span><br>
+                        <span style="font-size: 15px;">( </span>
+                        <span id="mtps"
+                            style="color: #eec; font-size: 15px;">{{formatNumber(Player.stage1.spacefoam)}}</span>
+                        <span style="font-size: 15px;"> per second)</span><br>
+                        <span id="sc1" style="color: #eec; font-size: 12px;"></span><br>
+                        <span id="sc2" style="color: #eec; font-size: 12px;"></span><br>
+                        <span id="sc3" style="color: #eec; font-size: 12px;"></span>
+                    </div>
+                    <div style="height: 65px;"></div>
+                    <div style="font-size: 20px;">Click on the image of a structure to buy it!</div>
+                    <div style="height: 10px;"></div>
+                    <div style="width: 90%; display: flex; justify-content: space-around; align-items: center;">
+                        <div style="width: 25%; display: flex; flex-direction: column; align-items: center;">
+                            <img src="./pic/neutrino.ico" alt="Neutrinos" onclick="purchases3buildings(0)">
+                            Neutrinos
+                            <div id="s3num1" style="font-size: 21px;">0</div>
+                            <div id="s3cost1" style="font-size: 16px; text-align:center;">Cost: 0 RM</div>
+                            <div style="height: 5px;"></div>
+                            <div>--- Effects ---</div>
+                            <div style="height: 5px;"></div>
+                            <div id="b1effect" style="font-size: 10px; text-align: center;"></div>
+                        </div>
+                        <div style="width: 25%; display: flex; flex-direction: column; align-items: center;">
+                            <img src="./pic/electron.ico" alt="Electrons" onclick="purchases3buildings(1)">
+                            Electrons
+                            <div id="s3num2" style="font-size: 21px;">0</div>
+                            <div id="s3cost2" style="font-size: 16px; text-align:center;">Cost: 0 RM</div>
+                            <div style="height: 5px;"></div>
+                            <div>--- Effects ---</div>
+                            <div style="height: 5px;"></div>
+                            <div id="b2effect" style="font-size: 10px; text-align: center;"></div>
+                        </div>
+                        <div style="width: 25%; display: flex; flex-direction: column; align-items: center;">
+                            <img src="./pic/neutron.ico" alt="Neutrons" onclick="purchases3buildings(2)">
+                            Neutrons
+                            <div id="s3num3" style="font-size: 21px;">0</div>
+                            <div id="s3cost3" style="font-size: 16px; text-align:center;">Cost: 0 RM</div>
+                            <div style="height: 5px;"></div>
+                            <div>--- Effects ---</div>
+                            <div style="height: 5px;"></div>
+                            <div id="b3effect" style="font-size: 10px; text-align: center;"></div>
+                        </div>
+                        <div style="width: 25%; display: flex; flex-direction: column; align-items: center;">
+                            <img src="./pic/proton.ico" alt="Protons" onclick="purchases3buildings(3)">
+                            Protons
+                            <div id="s3num4" style="font-size: 21px;">0</div>
+                            <div id="s3cost4" style="font-size: 16px; text-align:center;">Cost: 0 RM</div>
+                            <div style="height: 5px;"></div>
+                            <div>--- Effects ---</div>
+                            <div style="height: 5px;"></div>
+                            <div id="b4effect" style="font-size: 10px; text-align: center;"></div>
+                        </div>
+                    </div>
+                    <div style="height: 15px;"></div>
+                    <button id="s3bulk" class="purchasebutton-nafford" @click="changeBuy()">{{ Player.buy == 0 ?
+                        "Buy 1" : (Player.buy == 1 ? "Buy 10" : "Buy Max") }}</button>
+                    <template>
+                        <table class="image-table">
+                            <tbody>
+                                <tr v-for="row in s3rows" :key="row"
+                                    style="display: flex; flex-direction: row; justify-content: center;">
+                                    <td v-for="(image, index) in s3images.slice((row - 1) * 8, row * 8)" :key="index">
+                                        <div class="image-container">
+                                            <img :src="image" :alt="'Image ' + (index + 1 + (row - 1) * 8)"
+                                                class="grid-image" @mouseenter="hovers3upgrades(index+(row-1)*8)"
+                                                @click="purchases3upgrades(index+(row-1)*8)" />
+                                            <div class="mask" :id="gets3Mask(index+row*8-8)"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </template>
+                    <div style="height: 30px;"></div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div id="s3upgradename"></div>
+                        <div id="s3upgradecost"></div>
+                        <div id="s3upgradedesc"></div>
+                    </div>
+                    <div style="height: 70px;"></div>
+                </div>
+            </div>
+        </div>
+        <div id="saveoptions" class="hoverwindow-hidden">
+            <div class="buttontext">Save Options</div>
+            <div style="height: 30px;"></div>
+            <div style="display: flex;">
+                <button class="smallbutton" onclick="saveData()">Save</button>
+                <div style="width: 50px;"></div>
+                <button class="smallbutton" onclick="readData()">Read</button>
+            </div>
+            <div style="height: 30px;"></div>
+            <div style="display: flex;">
+                <button class="smallbutton" id="exportFile" onclick="exportToFile()">Export to File</button>
+                <div style="width: 50px;"></div>
+                <input type="file" id="fileInput" style="display: none;" accept=".txt" />
+                <button class="smallbutton" id="importFile" onclick="importFile()">Import from File</button>
+            </div>
+            <div style="height: 30px;"></div>
+            <div style="display: flex;">
+                <button class="smallbutton" id="exportClipboard" onclick="exportToClipboard()">Export to
+                    Clipboard</button>
+                <div style="width: 50px;"></div>
+                <button class="smallbutton" id="importClipboard" onclick="importFromClipboard()">Import from
+                    Clipboard</button>
+            </div>
+            <div style="height: 30px;"></div>
+            <textarea id="dataInput" rows="7" cols="70" placeholder="Paste your save here to import it."></textarea>
+            <button class="close-button" style="position: absolute; right: 5px; top: 3px;"
+                onclick="HideSaveOptions()">X</button>
+        </div>
+        <div id="updatelog" class="hoverwindow-hidden">
+            <div class="buttontext">Update Log</div>
+            <div style="height: 15px;"></div>
+            <div id="udlog" style="height: 285px; overflow-y: scroll; display: flex; flex-direction: column; align-items: center; text-align: center;">
+            </div>
+            <button class="close-button" style="position: absolute; right: 5px; top: 3px;"
+                onclick="HideUpdateLog()">X</button>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nullified Depth</title>
+    <script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/vue/2.6.12/vue.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body onload="UpdateOnLoad()">
+    <div id="app" class="bg">
+        <div id="header" class="header">
+            <div class="header-text">Nullified Depth</div>
+            <button class="smallbutton" style="position: relative; margin-left: auto; margin-right: 25px;"
+                onclick="DisplaySaveOptions()">Save</button>
+        </div>
+        <div id="maingame" class="maingame">
+            <div class="stageselect">
+                <button id="button1" onclick="SetTab(1)" class="stagebutton">
+                    <div class="buttontext">Space</div>
+                    <div class="buttonminitext">{{ formatNumber(Player.stage1.spacefoam) }} space foams</div>
+                </button>
+            </div>
+            <div class="container">
+                <div id="stage1" class="stage">
+                    <div style="height: 70px;"></div>
+                    <div>
+                        <span class="buttontext"> You have </span>
+                        <span style="color: #eec; font-size: 30px;">{{ formatNumber(Player.stage1.spacefoam) }}</span>
+                        <span class="buttontext"> space foams. </span>
+                    </div>
+                    <div style="height: 70px;"></div>
+                    <article id="buildings" style="width: 80%;">
+                        <template v-for="(building, index) in Player.stage1.buildings">
+                            <section class="row">
+                                <img :src="`./pic/${getBuildingImage(index)}`" :alt="getBuildingName(index)">
+                                <div style="font-size: 20px; width: 25%;"> {{ getBuildingName(index) }}: {{ formatNumber(building) }}</div>
+                                <div style="font-size: 20px; width: 30%;"> Producing: {{ formatNumber(s1prod(index)) }}</div>
+                                <button v-bind:class="{ purchasebutton: true, nafford: currents1purchase(index).cost > Player.stage1.spacefoam }" @click="purchases1buildings(index)">Buy {{ currents1purchase(index).num }} | Cost: {{ formatNumber(currents1purchase(index).cost) }}</button>
+                            </section>
+                            <section style="height: 10px;"></section>
+                        </template>
+                        <section class="row">
+                            <div style="width: 32px;"></div>
+                            <div style="width: 25%;"></div>
+                            <div style="width: 30%;"></div>
+                            <button class="purchasebutton" @click="changeBuy()">{{ Player.buy == 0 ? "Buy 1" : (Player.buy == 1 ? "Buy 10" : "Buy Max") }}</button>
+                        </section>
+                    </article>
+                </div>
+            </div>
+        </div>
+        <div id="saveoptions" class="hoverwindow-hidden">
+            <div class="buttontext">Save Options</div>
+            <div style="height: 30px;"></div>
+            <div style="display: flex;">
+                <button class="smallbutton" @click="saveData()">Save</button>
+                <div style="width: 50px;"></div>
+                <button class="smallbutton" @click="readData()">Read</button>
+            </div>
+            <div style="height: 30px;"></div>
+            <div style="display: flex;">
+                <button class="smallbutton" id="exportFile" @click="exportToFile()">Export to File</button>
+                <div style="width: 50px;"></div>
+                <input type="file" id="fileInput" style="display: none;" accept=".txt" @change="importFile()" />
+                <button class="smallbutton" id="importFile" @click="importFile()">Import from File</button>
+            </div>
+            <div style="height: 30px;"></div>
+            <div style="display: flex;">
+                <button class="smallbutton" id="exportClipboard" @click="exportToClipboard()">Export to Clipboard</button>
+                <div style="width: 50px;"></div>
+                <button class="smallbutton" id="importClipboard" @click="importFromClipboard()">Import from Clipboard</button>
+            </div>
+            <div style="height: 30px;"></div>
+            <textarea id="dataInput" rows="7" cols="70" placeholder="Paste your save here to import it."></textarea>
+            <button class="close-button" style="position: absolute; right: 5px; top: 3px;" @click="HideSaveOptions()">X</button>
+        </div>
+    </div>
+
+    <script src="stage.js"></script>
+    <script src="main.js"></script>
+    <script>
+        var app;
+        var Player = {
+            depth: 1,
+            buy: 0,
+            stage1: {
+                spacefoam: 10,
+                buildings: [0, 0, 0, 0, 0],
+                buildingsbasecost: [10, 1000, 1e7, 1e23, 1e29],
+                buildingscostinflation: [1.1, 1.15, 1.2, 1.3, 1.4],
+            }
+        };
+
+        const init = JSON.parse(JSON.stringify(Player)); // Deep copy of Player
+
+        function loadVue() {
+            app = new Vue({
+                el: "#app",
+                data: {
+                    Player: Player
+                },
+                methods: {
+                    formatNumber,
+                    s1buildingscost,
+                    s1buildingscost_10,
+                    s1buildingscost_max,
+                    changeBuy,
+                    currents1purchase,
+                    purchases1buildings,
+                    s1prod,
+                    saveData,
+                    readData,
+                    exportToFile,
+                    importFile,
+                    exportToClipboard,
+                    importFromClipboard,
+                    getBuildingImage,
+                    getBuildingName,
+                    HideSaveOptions,
+                    DisplaySaveOptions
+                }
+            });
+        }
+
+        function getBuildingImage(index) {
+            const buildingImages = ['dot.jpg', 'line.jpg', 'plane.jpg', 'cube.jpg', 'tesseract.jpg'];
+            return buildingImages[index];
+        }
+
+        function getBuildingName(index) {
+            const buildingNames = ['Dots', 'Lines', 'Planes', 'Cubes', 'Tesseracts'];
+            return buildingNames[index];
+        }
+
+        function UpdateOnLoad() {
+            loadVue();
+            readData();
+            UpdateButtons();
+        }
+
+        function UpdateButtons() {
+            for (var i = 1; i <= max_stage; i++) {
+                if (StageUnlocked(i)) document.getElementById("button" + i).style.display = "flex";
+                else document.getElementById("button" + i).style.display = "none";
+            }
+        }
+
+        function SetTab(tab) {
+            current_tab = tab;
+            for (var i = 1; i <= max_stage; i++) {
+                if (i == tab) document.getElementById("button" + i).style.display = "flex";
+                else document.getElementById("button" + i).style.display = "none";
+            }
+        }
+
+        // ... [Other functions unchanged] ...
+
+        function s1prod(idx) {
+            let prod = new Array(0, 0, 0, 0, 0);
+            prod[0] = Player.stage1.buildings[0];
+            return prod[idx];
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,405 @@
+/* --- Main --- */
+
+.bg {
+    position: fixed;
+    top: 0%;
+    left: 0%;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    position: relative;
+    top: 0%;
+    left: 0%;
+    height: 100%;
+    width: 100%;
+    z-index: 9;
+}
+
+.header {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 800;
+    background-color: #1f1e33;
+    color: white;
+    height: 75px;
+    width: 100%;
+    top: 0%;
+    left: 0%;
+    display: flex;
+    align-items: center;
+    z-index: 10;
+    border-bottom: 1px solid black;
+}
+
+.header-text {
+    position: relative;
+    left: 25px;
+    font-size: 45px;
+}
+
+.maingame {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 550;
+    background-color: #5d5a99;
+    color: white;
+    height: 300%;
+    width: 100%;
+    top: 0%;
+    left: 0%;
+    z-index: 8;
+    display: flex;
+    align-items: center;
+}
+
+.stageselect {
+    font-family: inherit;
+    font-weight: inherit;
+    background-color: #1f1e33;
+    color: white;
+    position: relative;
+    height: 100%;
+    width: 200px;
+    top: 0%;
+    left: 0%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 9;
+    border-right: 1px solid black;
+}
+
+.stagebutton {
+    font-family: inherit;
+    font-weight: inherit;
+    background-color: #1f1e33;
+    color: white;
+    height: 80px;
+    width: 200px;
+    z-index: 10;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.purchasebutton-afford {
+    font-family: inherit;
+    font-weight: inherit;
+    background-color: #1f1e33;
+    color: white;
+    height: 40px;
+    width: 18%;
+    font-size: 15px;
+    border: 3px solid darkblue;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 12;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.purchasebutton-afford:hover {
+    background-color: #606080;
+}
+
+.purchasebutton-nafford {
+    font-family: inherit;
+    font-weight: inherit;
+    background-color: #1f1e33;
+    color: white;
+    height: 40px;
+    width: 18%;
+    font-size: 15px;
+    border: 3px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 12;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.purchasebutton-nafford:hover {
+    background-color: #606080;
+}
+.purchasebutton-auto {
+    font-family: inherit;
+    font-weight: inherit;
+    background-color: #1f1e33;
+    color: white;
+    height: 40px;
+    width: 9%;
+    font-size: 15px;
+    border: 3px solid green;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 12;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.purchasebutton-auto:hover {
+    background-color: #606080;
+}
+.purchasebutton-nauto {
+    font-family: inherit;
+    font-weight: inherit;
+    background-color: #1f1e33;
+    color: white;
+    height: 40px;
+    width: 9%;
+    font-size: 15px;
+    border: 3px solid red;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 12;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.purchasebutton-nauto:hover {
+    background-color: #606080;
+}
+
+.purchasebutton-small-afford {
+    font-family: inherit;
+    font-weight: inherit;
+    background-color: #1f1e33;
+    color: white;
+    height: 40px;
+    width: 30%;
+    font-size: 15px;
+    border: 3px solid darkblue;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 12;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.purchasebutton-small-afford:hover {
+    background-color: #606080;
+}
+
+.purchasebutton-small-nafford {
+    font-family: inherit;
+    font-weight: inherit;
+    background-color: #1f1e33;
+    color: white;
+    height: 40px;
+    width: 30%;
+    font-size: 15px;
+    border: 3px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 12;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.purchasebutton-small-nafford:hover {
+    background-color: #606080;
+}
+
+.stagebutton:hover {
+    background-color: #606080;
+}
+
+.smallbutton {
+    font-family: inherit;
+    font-weight: inherit;
+    background-color: #1f1e33;
+    color: white;
+    height: 56px;
+    width: 180px;
+    z-index: 10;
+    font-size: 25px;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.smallbutton:hover {
+    background-color: #606080;
+}
+
+.close-button {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    /* Width of the button */
+    height: 30px;
+    /* Height of the button */
+    background-color: #ff4d4d;
+    /* Background color */
+    color: white;
+    /* Text color */
+    border: none;
+    /* No border */
+    border-radius: 10%;
+    /* Make it circular */
+    cursor: pointer;
+    /* Pointer cursor on hover */
+    font-size: 18px;
+    /* Font size */
+    transition: background-color 0.3s;
+    /* Smooth background color transition */
+}
+
+.close-button:hover {
+    background-color: #cc1a1a;
+    /* Darker red on hover */
+}
+
+.buttontext {
+    font-size: 25px;
+}
+
+.buttonminitext {
+    font-size: 12px;
+}
+
+.hoverwindow {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 800;
+    background-color: #1f1e33;
+    position: fixed;
+    color: white;
+    top: 50%;
+    left: 50%;
+    height: 350px;
+    width: 500px;
+    transform: translate(-50%, -50%);
+    z-index: 13;
+    border: 5px solid black;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.hoverwindow-hidden {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 800;
+    background-color: #1f1e33;
+    position: fixed;
+    color: white;
+    top: 50%;
+    left: 50%;
+    height: 350px;
+    width: 500px;
+    transform: translate(-50%, -50%);
+    z-index: 12;
+    border: 5px solid black;
+    border-radius: 5px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.stage {
+    font-family: 'Courier New', Courier, monospace;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.row {
+    width: 100%;
+    height: 40px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.image-table {
+    border-collapse: collapse;
+    margin: auto;
+}
+
+.image-table td {
+    padding: 2px;
+}
+
+.image-container {
+    position: relative; /* Position relative to contain the absolute mask */
+    display: inline-block; /* Adjust as needed */
+}
+
+.grid-image {
+    width: 32px;
+    height: 32px;
+}
+
+.mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 32px;
+    width: 32px;
+    background-color: rgba(0, 255, 0, 0.5); /* Green with 50% opacity */
+    display: none; /* Initially hide the mask */
+    pointer-events: none;
+}
+
+.mask2 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 32px;
+    width: 32px;
+    background-color: rgba(255, 136, 195, 0.5);
+    display: none; /* Initially hide the mask */
+    pointer-events: none;
+}
+
+.prestigebutton {
+    font-family: inherit;
+    font-weight: inherit;
+    background-color: #1f1e33;
+    color: white;
+    height: 120px;
+    width: 400px;
+    z-index: 10;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, transform 0.3s;
+    font-size: 15px;
+}
+.prestigebutton:hover {
+    background-color: #606080;
+}
+
+.imagebutton {
+    height: 64px;
+    width: 64px;
+}

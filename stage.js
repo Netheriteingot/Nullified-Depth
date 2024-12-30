@@ -332,6 +332,7 @@ function s1auto(idx){
     if(idx==2&&Player.stage1.upgrades[18])return true;
     if(idx==3&&Player.stage1.upgrades[19])return true;
     if(idx==4&&Player.stage1.upgrades[19])return true;
+    return false;
 }
 var cur_idx = -1;
 function hovers1upgrades(idx) {

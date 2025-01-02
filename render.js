@@ -3,7 +3,7 @@ var UpdateLog = [
         "Beta 0.2",
         "Added a new prestige layer.",
         "Serious bug fixes."
-    ]
+    ],
     [
         "Beta 0.1.1",
         "Fixed auto buttons somehow always shown.",

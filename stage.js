@@ -34,8 +34,8 @@ const Player_para = {
     },
     stage2: {
         upgrade_cost: [1,10,100,1e3,1e5,1e7,1e7,1e15,1e8,1e9,1e10,1e11,1e15,1e17,1e12,1e21,1e16,1e17,1e18,1e19,1e27,1e31,6.9e69,1e35],
-        upgrade_max_level: [10,10,10,10,3,1,3,1,10,10,10,10,5,1,42,3,10,10,10,10,3,1,1,35],
-        upgrade_cost_scaling: [10,10,10,10,1000,1,1000,1,100,100,100,100,69,1,6,1e8,1e4,1e4,1e4,1e4,42,1,1,10]
+        upgrade_max_level: [10,10,10,10,3,1,3,1,10,10,10,10,5,1,42,3,10,10,10,10,5,1,1,35],
+        upgrade_cost_scaling: [10,10,10,10,1000,1,1000,1,100,100,100,100,69,1,6,1e8,1e4,1e4,1e4,1e4,420,1,1,10]
     },
     stage3: {
         upgrade_cost: [1e-8,1e-7,1e-6,1e-5,2e-4,5e-2,2e6,1e9,2e-7,2e-6,2e-5,6e-4,2e-3,1e11,1e15,6.022e26],
@@ -161,22 +161,22 @@ const s3upgradeEffect = new Array(
     "Congratulations on reaching a kilogram! Unlock the next stage.",
 );
 const s3images = new Array(
-    "./pic/s2upgrade1.jpg",
-    "./pic/s2upgrade2.jpg",
-    "./pic/s2upgrade3.jpg",
-    "./pic/s2upgrade4.jpg",
-    "./pic/s2upgrade5.jpg",
-    "./pic/s2upgrade6.jpg",
-    "./pic/s2upgrade7.jpg",
-    "./pic/s2upgrade8.jpg",
-    "./pic/s2upgrade9.jpg",
-    "./pic/s2upgrade10.jpg",
-    "./pic/s2upgrade11.jpg",
-    "./pic/s2upgrade12.jpg",
-    "./pic/s2upgrade13.jpg",
-    "./pic/s2upgrade14.jpg",
-    "./pic/s2upgrade15.jpg",
-    "./pic/s2upgrade16.jpg",
+    "./pic/s3upgrade1.jpg",
+    "./pic/s3upgrade2.jpg",
+    "./pic/s3upgrade3.jpg",
+    "./pic/s3upgrade4.jpg",
+    "./pic/s3upgrade5.jpg",
+    "./pic/s3upgrade6.jpg",
+    "./pic/s3upgrade7.jpg",
+    "./pic/s3upgrade8.jpg",
+    "./pic/s3upgrade9.jpg",
+    "./pic/s3upgrade10.jpg",
+    "./pic/s3upgrade11.jpg",
+    "./pic/s3upgrade12.jpg",
+    "./pic/s3upgrade13.jpg",
+    "./pic/s3upgrade14.jpg",
+    "./pic/s3upgrade15.jpg",
+    "./pic/s3upgrade16.jpg",
 )
 const s1rows = [0, 1, 2, 3];
 const s2rows = [0, 1, 2, 3];
@@ -289,7 +289,7 @@ function s1DoEveryCycle() {
     if (Player.stage1.upgrades[10]) Player.stage1.buildingsunlocked[3] = 1;
     if (Player.stage1.upgrades[11]) Player.stage1.buildingsunlocked[4] = 1;
 
-    for(var i=0;i<5;i++)if(Player.stage1.auto[i])purchases1buildings(i);
+    for(var i=0;i<5;i++)if(Player.stage1.auto[i] && s1auto(i))purchases1buildings(i);
 }
 
 function purchases1upgrades(idx) {
@@ -334,6 +334,9 @@ function s1auto(idx){
     if(idx==4&&Player.stage1.upgrades[19])return true;
     return false;
 }
+function s1BuyMaxUpgrades(){
+    for(var i=0;i<Player.stage1.upgrades.length;i++)purchases1upgrades(i);
+}
 var cur_idx = -1;
 function hovers1upgrades(idx) {
     cur_idx = idx;
@@ -349,7 +352,7 @@ function hovers1upgrades(idx) {
         `<span>` + s1upgradeEffect[idx] + `</span>`;
     document.getElementById("s1upgradecost").innerHTML =
         `<span style="color: gold;">Cost: </span>` +
-        `<span>` + formatNumber(Player_para.stage1.upgrade_cost[idx]) + `</span>`;
+        `<span>` + formatNumber(Player_para.stage1.upgrade_cost[idx]) + ` Space Foams</span>`;
     document.getElementById("s1upgradeeff").innerHTML =
         `<span style="color: gold;">Effect: </span>` +
         `<span>` + gets1UpgradeEffect(idx) + `</span>`;
@@ -361,7 +364,7 @@ function s1upgradereset() {
 }
 
 setInterval(function () {
-    s1DoEveryCycle();
+    if(StageUnlocked(1))s1DoEveryCycle();
 }, 50);
 
 
@@ -423,12 +426,15 @@ function hovers2upgrades(idx) {
         `<span>` + s2upgradeEffect[idx] + `</span>`;
     document.getElementById("s2upgradecost").innerHTML =
         `<span style="color: gold;">Cost: </span>` +
-        `<span>` + formatNumber(calcs2upgradecost(idx)) + `</span>`;
+        `<span>` + formatNumber(calcs2upgradecost(idx)) + ` Planck Time</span>`;
     document.getElementById("s2upgradeeff").innerHTML =
         `<span style="color: gold;">Effect: </span>` +
         `<span>` + gets2UpgradeEffect(idx) + `</span>`;
 }
 
+function s2BuyMaxUpgrades(){
+    for(var i=0;i<Player.stage2.upgrades.length;i++)for(var j=0;j<Player_para.stage2.upgrade_max_level[i];j++)purchases2upgrades(i);
+}
 function calcs2PrestigeGain(){
     var tmp=Player.stage2.plancktime+1;
     tmp=Math.log10(tmp);
@@ -484,7 +490,7 @@ function s2DoEveryCycle(){
 }
 
 setInterval(function () {
-    s2DoEveryCycle();
+    if(StageUnlocked(2))s2DoEveryCycle();
 }, 50);
 
 
@@ -536,13 +542,16 @@ function currents3purchase(idx) {
     else return s3buildingscost(idx);
 }
 function purchases3buildings(idx) {
-    console.log(currents3purchase(idx));
+    //console.log(currents3purchase(idx));
     if (Player.stage3.mt >= currents3purchase(idx).cost) {
         Player.stage3.mt -= currents3purchase(idx).cost;
         Player.stage3.buildings[idx]+=currents3purchase(idx).num;
         Player.stage3.buildingsbought[idx] += currents3purchase(idx).num;
     }
     //app.$forceUpdate();
+}
+function s3BuyMaxUpgrades(){
+    for(var i=0;i<Player.stage3.upgrades.length;i++)purchases3upgrades(i);
 }
 
 function gets3Mask(idx) { return "s3mask" + idx; }
@@ -572,7 +581,7 @@ function hovers3upgrades(idx) {
         `<span>` + s3upgradeEffect[idx] + `</span>`;
     document.getElementById("s3upgradecost").innerHTML =
         `<span style="color: gold;">Cost: </span>` +
-        `<span>` + formatNumber(calcs3upgradecost(idx)) + `</span>`;
+        `<span>` + formatNumber(calcs3upgradecost(idx)) + ` Relative Mass</span>`;
 }
 function s3getBuildingEff(idx){
     if(idx==1){
@@ -655,5 +664,5 @@ function s3DoEveryCycle(){
 }
 
 setInterval(function () {
-    s3DoEveryCycle();
+    if(StageUnlocked(3))s3DoEveryCycle();
 }, 50);

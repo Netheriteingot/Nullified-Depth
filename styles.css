@@ -185,6 +185,52 @@
     z-index: 12;
     transition: background-color 0.3s, transform 0.3s;
 }
+.purchasebutton-auto-hidden {
+    font-family: inherit;
+    font-weight: inherit;
+    background-color: #1f1e33;
+    color: white;
+    height: 40px;
+    width: 9%;
+    font-size: 15px;
+    border: 3px solid green;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 12;
+}
+.purchasebutton-nauto-hidden {
+    font-family: inherit;
+    font-weight: inherit;
+    background-color: #1f1e33;
+    color: white;
+    height: 40px;
+    width: 9%;
+    font-size: 15px;
+    border: 3px solid red;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 12;
+}
+.purchasebutton-small-afford {
+    font-family: inherit;
+    font-weight: inherit;
+    background-color: #1f1e33;
+    color: white;
+    height: 40px;
+    width: 30%;
+    font-size: 15px;
+    border: 3px solid darkblue;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 12;
+    transition: background-color 0.3s, transform 0.3s;
+}
 
 .purchasebutton-small-afford:hover {
     background-color: #606080;
@@ -382,7 +428,7 @@
 .prestigebutton {
     font-family: inherit;
     font-weight: inherit;
-    background-color: #1f1e33;
+    background-color: #000000;
     color: white;
     height: 120px;
     width: 400px;
@@ -397,6 +443,17 @@
 }
 .prestigebutton:hover {
     background-color: #606080;
+}
+.colorchange {
+    animation: colorChange 3s infinite alternate;
+}
+@keyframes colorChange {
+    0% {
+        background-color: #000000; /* Start color (red) */
+    }
+    100% {
+        background-color: #211e5e; /* End color (blue) */
+    }
 }
 
 .imagebutton {

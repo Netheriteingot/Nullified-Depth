@@ -1,12 +1,18 @@
 var UpdateLog = [
     [
-        "Older",
-        "Added content to the game."
+        "Beta 0.1.1",
+        "Fixed auto buttons somehow always shown.",
+        "Added Quality of Life stuff like a buy max upgrades button.",
+        "Optimizations."
     ],
     [
         "Beta 0.1",
         "Revamped formula for offline progress calculation under 10 minutes.",
         "Added Stage 3."
+    ],
+    [
+        "Older",
+        "Added content to the game."
     ]
 ]
 
@@ -56,10 +62,9 @@ function render() {
     for (var i = 0; i < 5; i++)document.getElementById("s1" + i + "x").style.display = (Player.stage1.buildingsunlocked[i] ? "flex" : "none");
     for (var i = 0; i < 5; i++)document.getElementById("s1" + i + "num").innerHTML = gets1BuildingName(i) + " : " + formatNumber(Player.stage1.buildings[i]) + (Player.stage1.buildings[i] == Player.stage1.buildingsbought[i] ? "" : " [" + formatNumber(Player.stage1.buildingsbought[i]) + "]");
     for (var i = 0; i < 5; i++)document.getElementById("s1" + i + "prod").innerHTML = "Producing: " + formatNumber(s1prod(i));
-    for (var i = 0; i < 5; i++)document.getElementById("s1" + i + "buy").className = "purchasebutton" + (s1auto(i) ? "-small" : "") + ((currents1purchase(i).cost > Player.stage1.spacefoam) ? "-nafford" : "-afford");
+    for (var i = 0; i < 5; i++)document.getElementById("s1" + i + "buy").className = "purchasebutton" + (s1auto(i) ? "" : "-small") + ((currents1purchase(i).cost > Player.stage1.spacefoam) ? "-nafford" : "-afford");
     for (var i = 0; i < 5; i++)document.getElementById("s1" + i + "buy").innerHTML = "Buy " + currents1purchase(i).num + " | Cost: " + formatNumber(currents1purchase(i).cost) + "";
-    for (var i = 0; i < 5; i++)document.getElementById("s1" + i + "auto").style.display = (s1auto(i) ? "block" : "hidden"); 
-    for (var i = 0; i < 5; i++)document.getElementById("s1" + i + "auto").className = "purchasebutton" + (Player.stage1.auto[i] ? "-auto" : "-nauto"); 
+    for (var i = 0; i < 5; i++)document.getElementById("s1" + i + "auto").className = "purchasebutton" + (Player.stage1.auto[i] ? "-auto" : "-nauto") + (s1auto(i) ? "" : "-hidden"); 
     for (var i = 0; i < 5; i++)document.getElementById("s1" + i + "auto").innerHTML = "Auto " + (Player.stage1.auto[i] ? "ON" : "OFF");
     document.getElementById("s1bulk").innerHTML = (Player.buy == 0 ? "Buy 1" : (Player.buy == 1 ? "Buy 10" : "Buy Max"));
     document.getElementById("s3bulk").innerHTML = (Player.buy == 0 ? "Buy 1" : (Player.buy == 1 ? "Buy 10" : "Buy Max"));
@@ -95,6 +100,9 @@ function render() {
         s2abletoprestige()?
         "Prestige and get "+formatNumber(calcs2PrestigeGain()-Player.stage2.tex)+" Time Extensions!":
         "Prestige and get nothing!"
+    );
+    document.getElementById("texbutton").className=(
+        s2abletoprestige()? "prestigebutton colorchange" : "prestigebutton"
     );
     document.getElementById("tex").innerHTML="You have "+formatNumber(Player.stage2.tex)+" Time Extensions, giving a "+formatNumber(calcs2prestigeeffect())+"x bonus to Planck Time production.";
     

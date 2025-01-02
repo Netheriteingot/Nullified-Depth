@@ -6,7 +6,7 @@ function DepthGoDown() {
 }
 
 function StageUnlocked(stage) {
-    if(stage==0)return Player.stage3.upgrades[15]; //to be changed
+    if(stage==0)return Player.stage3.upgrades[15] || Player.prestige.uniresetcount>0; //to be changed
     if(stage==1)return true;
     if(stage==2)return Player.stage1.upgrades[15];
     if(stage==3)return Player.stage2.upgrades[22];

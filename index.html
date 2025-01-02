@@ -28,6 +28,7 @@
                 <button id="button0" onclick="SetTab(0)" class="stagebutton">
                     <div id="dp" class="buttontext">Depths</div>
                 </button>
+                <div>Main Layers</div>
                 <button id="button1" onclick="SetTab(1)" class="stagebutton">
                     <div class="buttontext">Space</div>
                     <div id="spf-side" class="buttonminitext">{{formatNumber(Player.stage1.spacefoam)}} space foams
@@ -45,7 +46,65 @@
                 </button>
             </div>
             <div class="container">
-                <div id="stage0" class="stage">Placeholder</div>
+                <div id="stage0" class="stage">
+                    <div style="height: 70px;"></div>
+                    <div>
+                        <span class="buttontext"> You have </span>
+                        <span id="uni"
+                            style="color: #eec; font-size: 30px;"></span>
+                        <span class="buttontext"> Universes. </span>
+                    </div>
+                    <div style="height: 20px;"></div>
+                    <button id="unireset" onclick="Prestige()" class="prestigebutton colorchange">
+                        <div id="uniresettext" class="buttontext">Placeholder</div>
+                    </button>
+                    <div style="height: 35px;"></div>
+                    <div style="display: flex; flex-direction: row; width: 100%; text-align: center;">
+                        <div style="display: flex; flex-direction: column; width: 50%;">
+                            <template>
+                                <table class="image-table">
+                                    <tbody>
+                                        <tr v-for="row in prrows" :key="row"
+                                            style="display: flex; flex-direction: row; justify-content: center;">
+                                            <td v-for="(image, index) in primages.slice((row - 1) * 8, row * 8)" :key="index">
+                                                <div class="image-container">
+                                                    <img :src="image" :alt="'Image ' + (index + 1 + (row - 1) * 8)"
+                                                        class="grid-image" @mouseenter="hoverprupgrades(index+(row-1)*8)"
+                                                        @click="purchaseprupgrades(index+(row-1)*8)" />
+                                                    <div class="mask" :id="getprMask(index+row*8-8)"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </template>
+                            <div style="height: 30px;"></div>
+                            <div style="display: flex; flex-direction: column; align-items: center;">
+                                <div id="prupgradename"></div>
+                                <div id="prupgradecost"></div>
+                                <div id="prupgradedesc" style="text-align: center;"></div>
+                            </div>
+                            <div style="height: 70px;"></div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; width: 50%;">
+                            <div>Buy all current upgrades to go down 1 depth. (to be done)</div>
+                            <div style="height: 25px;"></div>
+                            <div> =-- Current Depth effect --=</div>
+                            <div style="height: 25px;"></div>
+                            <div> None </div>
+                            <div style="height: 14px;"></div>
+                            <div> =-- Next Depth Effect --=</div>
+                            <div style="height: 14px;"></div>
+                            <div> - Unlocks a new stage </div><br>
+                            <div> - 10x Universes gain </div><br>
+                            <div> - Unlocks 2 new rows of Prestige upgrades </div><br>
+                            <div style="color: #ffaaaa;"> - 5x less production to all</div><br>
+                            <div style="color: #ffaaaa;"> - ^0.9 production to all </div><br>
+                            <div> - Upgrades that unlock other stages are cheaper </div><br>
+                            <div> - All currency except Space foams gain a new effect </div>
+                        </div>
+                    </div>
+                </div>
                 <div id="stage1" class="stage">
                     <div id="op1"></div>
                     <div style="height: 70px;"></div>

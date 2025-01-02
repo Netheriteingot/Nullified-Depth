@@ -1,5 +1,10 @@
 var UpdateLog = [
     [
+        "Beta 0.2",
+        "Added a new prestige layer.",
+        "Serious bug fixes."
+    ]
+    [
         "Beta 0.1.1",
         "Fixed auto buttons somehow always shown.",
         "Added Quality of Life stuff like a buy max upgrades button.",
@@ -102,7 +107,7 @@ function render() {
         "Prestige and get nothing!"
     );
     document.getElementById("texbutton").className=(
-        s2abletoprestige()? "prestigebutton colorchange" : "prestigebutton"
+        s2abletoprestige()? "prestigebutton-colorchange" : "prestigebutton"
     );
     document.getElementById("tex").innerHTML="You have "+formatNumber(Player.stage2.tex)+" Time Extensions, giving a "+formatNumber(calcs2prestigeeffect())+"x bonus to Planck Time production.";
     
@@ -126,6 +131,24 @@ function render() {
     if(s3prod()>0.01)document.getElementById("sc1").innerHTML="Particles are escaping. Mass production above 1 will be raised to ^0.5.";
     if(s3prod()>1e2)document.getElementById("sc2").innerHTML="Particles are escaping even more rapidly. Mass production above 1e4 will again be raised to ^0.5.";
     if(s3prod()>1e6)document.getElementById("sc3").innerHTML="Particles are escaping even more rapidly. Mass production above 1e8 will again be raised to ^0."+(Player.stage3.upgrades[14]?"875":"75")+".";
+
+    
+    document.getElementById("uni").innerHTML = formatNumber(Player.prestige.uni);
+    document.getElementById("uniresettext").innerHTML=(
+        Player.stage3.upgrades[15]?
+        "Reset previous progress for "+formatNumber(UniGain())+" Universes!":
+        "Reach 6.022e26 Relative Mass to reset!"
+    );
+    document.getElementById("unireset").className=(
+        Player.stage3.upgrades[15]? "prestigebutton-colorchange" : "prestigebutton"
+    );
+    for (var i = 0; i < Player.prestige.upgrades.length; i++) {
+        if (Player.prestige.upgrades[i] == 1) {
+            document.getElementById("prmask" + i).style.display = 'block'; // Show the mask
+        } else {
+            document.getElementById("prmask" + i).style.display = 'none'; // Hide the mask
+        }
+    }
 }
 
 function renderonBuy() {

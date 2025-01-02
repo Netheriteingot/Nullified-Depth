@@ -22,6 +22,11 @@ const startPlayer = {
         auto: [0,0,0,0],
         upgrades: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     },
+    prestige: {
+        uni: 0,
+        upgrades: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        uniresetcount: 0
+    },
     timestamp: 0,
     op: 0,
     version: 1
@@ -41,6 +46,9 @@ const Player_para = {
         upgrade_cost: [1e-8,1e-7,1e-6,1e-5,2e-4,5e-2,2e6,1e9,2e-7,2e-6,2e-5,6e-4,2e-3,1e11,1e15,6.022e26],
         buildingsbasecost:[1e-9,6e-4,1,1],
         buildingscostinflation:[1.2,10,3,100]
+    },
+    prestige: {
+        upgrade_cost: [1,2,2,2,3,3,3,17,2,16,128,20,1e3,1e3,1e3,71]
     }
 };
 const s1upgradeName = new Array("I", "II", "III", "1st Dimension", "Spacial Combination", "IV", "V", "2nd Dimension", "Spacial Rearrangement", "VI", "3rd Dimension", "4th Dimension", "Euler's Theorem", "Fractals", "Spacial Concatenation", "Timelapse", "Auto 1", "Auto 2", "Auto 3", "Auto 4");
@@ -178,9 +186,46 @@ const s3images = new Array(
     "./pic/s3upgrade15.jpg",
     "./pic/s3upgrade16.jpg",
 )
+const prupgradeEffect = new Array(
+    "x1.6 gain on everything, ignoring any in-stage softcaps.",
+    "x1.3 all structures' production in Space and x1.5 Space Foams Gain.",
+    "x1.6 Planck Time Gain.",
+    "x1.8 Relative Mass Gain. (This boost is less affected by softcaps.)",
+    "x1.3 all structures' production in Space and x1.8 Space Foams Gain.",
+    "x1.7 Planck Time Gain.",
+    "x1.7 Relative Mass Gain. (This boost is less affected by softcaps.)",
+    "Get 1% of Time Extensions on prestige every real second.",
+    "Gain 2 extra base Universes every reset.",
+    "Gain 2 extra base Universes every reset.",
+    "Gain 2 extra base Universes every reset.",
+    "x2 Universes Gain.",
+    "Placeholder",
+    "Placeholder",
+    "Placeholder",
+    "Prestige Upgrade 1x8 is 3 times faster.",
+);
+const primages = new Array(
+    "./pic/prupgrade1.jpg",
+    "./pic/prupgrade2.jpg",
+    "./pic/prupgrade3.jpg",
+    "./pic/prupgrade4.jpg",
+    "./pic/prupgrade5.jpg",
+    "./pic/prupgrade6.jpg",
+    "./pic/prupgrade7.jpg",
+    "./pic/prupgrade8.jpg",
+    "./pic/prupgrade9.jpg",
+    "./pic/prupgrade10.jpg",
+    "./pic/prupgrade11.jpg",
+    "./pic/prupgrade12.jpg",
+    "./pic/prupgrade13.jpg",
+    "./pic/prupgrade14.jpg",
+    "./pic/prupgrade15.jpg",
+    "./pic/prupgrade16.jpg",
+)
 const s1rows = [0, 1, 2, 3];
 const s2rows = [0, 1, 2, 3];
 const s3rows = [0, 1, 2];
+const prrows = [0, 1, 2];
 
 // Log the startPlayer object to the console
 console.log("startPlayer:", startPlayer);
@@ -205,7 +250,7 @@ function s1buildingscost_10(idx) {
     return info;
 }
 function s1buildingscost_max(idx) {
-    var tot = 0, i = 0;
+    let tot = 0, i = 0;
     for (; ; i++) {
         tot += Player_para.stage1.buildingsbasecost[idx] * Math.pow(Player_para.stage1.buildingscostinflation[idx], Player.stage1.buildingsbought[idx] + i);
         if (tot > Player.stage1.spacefoam) { tot -= Player_para.stage1.buildingsbasecost[idx] * Math.pow(Player_para.stage1.buildingscostinflation[idx], Player.stage1.buildingsbought[idx] + i); break; }
@@ -251,10 +296,11 @@ function currents1purchase(idx) {
 }
 function purchases1buildings(idx) {
     // console.log(currents1purchase(idx));
-    if (Player.stage1.spacefoam >= currents1purchase(idx).cost) {
-        Player.stage1.spacefoam -= currents1purchase(idx).cost;
-        Player.stage1.buildings[idx] += currents1purchase(idx).num;
-        Player.stage1.buildingsbought[idx] += currents1purchase(idx).num;
+    let csp = currents1purchase(idx);
+    if (Player.stage1.spacefoam >= csp.cost) {
+        Player.stage1.spacefoam -= csp.cost;
+        Player.stage1.buildings[idx] += csp.num;
+        Player.stage1.buildingsbought[idx] += csp.num;
     }
     //app.$forceUpdate();
 }
@@ -267,6 +313,11 @@ function s1prod(idx) {
     if (Player.stage1.upgrades[0]) prod[0] *= 3;
     if (Player.stage1.upgrades[1]) prod[0] *= 3;
     if (Player.stage1.upgrades[2]) prod[0] *= 3;
+    if(Player.prestige.upgrades[0])prod[0] *= 1.6;
+    if(Player.prestige.upgrades[1])prod[0] *= 1.5;
+    if(Player.prestige.upgrades[1])for(var i=0;i<5;i++)prod[i]*=1.3;
+    if(Player.prestige.upgrades[4])prod[0] *= 1.8;
+    if(Player.prestige.upgrades[4])for(var i=0;i<5;i++)prod[i]*=1.3;
     if (Player.stage1.upgrades[4]) prod[0] *= Math.pow(1.02, Player.stage1.buildingsbought[0]);
     if (Player.stage1.upgrades[5]) prod[1] *= 3;
     if (Player.stage1.upgrades[6]) prod[1] *= 3;
@@ -480,6 +531,9 @@ function tps(){
     prod*=Math.pow(1.5+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[19]);
     prod*=Math.pow(1.075,Player.stage2.upgrades[14]);
     prod*=Math.pow(5,Player.stage2.upgrades[23]);
+    if(Player.prestige.upgrades[0])prod*=1.6;
+    if(Player.prestige.upgrades[2])prod*=1.6;
+    if(Player.prestige.upgrades[5])prod*=1.7;
     prod*=Math.pow(Player.stage2.tsitex+1,0.18*Player.stage2.upgrades[4]+0.1*Player.stage2.upgrades[12]+0.1*Player.stage2.upgrades[20]);
     return prod;
 }
@@ -487,6 +541,8 @@ function tps(){
 function s2DoEveryCycle(){
     Player.stage2.tsitex+=0.05;
     Player.stage2.plancktime+=tps()/20*optickspeedmult();
+    if(Player.prestige.upgrades[7]) Player.stage2.tex += Math.max(0, (calcs2PrestigeGain()-Player.stage2.tex)/2000);
+    if(Player.prestige.upgrades[15]) Player.stage2.tex += Math.max(0, (calcs2PrestigeGain()-Player.stage2.tex)/1000);
 }
 
 setInterval(function () {
@@ -543,10 +599,11 @@ function currents3purchase(idx) {
 }
 function purchases3buildings(idx) {
     //console.log(currents3purchase(idx));
-    if (Player.stage3.mt >= currents3purchase(idx).cost) {
-        Player.stage3.mt -= currents3purchase(idx).cost;
-        Player.stage3.buildings[idx]+=currents3purchase(idx).num;
-        Player.stage3.buildingsbought[idx] += currents3purchase(idx).num;
+    let csp = currents3purchase(idx);
+    if (Player.stage3.mt >= csp.cost) {
+        Player.stage3.mt -= csp.cost;
+        Player.stage3.buildings[idx]+=csp.num;
+        Player.stage3.buildingsbought[idx] += csp.num;
     }
     //app.$forceUpdate();
 }
@@ -649,10 +706,13 @@ function s3prod(){
     prod*=(Math.pow(3,Player.stage3.buildings[3]));
     if(prod>1)prod=Math.pow(prod,0.5);
     if(prod>1e4)prod=100*Math.pow(prod,0.5);
+    if(Player.prestige.upgrades[3])prod*=1.8;
+    if(Player.prestige.upgrades[6])prod*=1.7;
     if(prod>1e8){
         if(Player.stage3.upgrades[14])prod=10*Math.pow(prod,0.875);
         else prod=100*Math.pow(prod,0.75);
     }
+    if(Player.prestige.upgrades[0])prod*=1.6;
     if(Player.stage3.upgrades[13])prod*=Math.pow(1.4,Math.max(Player.stage3.buildingsbought[2]-20,0));
     return prod;
 }
@@ -666,3 +726,49 @@ function s3DoEveryCycle(){
 setInterval(function () {
     if(StageUnlocked(3))s3DoEveryCycle();
 }, 50);
+
+
+function UniGain(){
+    var gain = 5;
+    if(Player.prestige.upgrades[8]) gain += 2;
+    if(Player.prestige.upgrades[9]) gain += 2;
+    if(Player.prestige.upgrades[10]) gain += 2;
+    if(Player.prestige.upgrades[11]) gain *= 2;
+    return gain;
+}
+
+function Prestige(){
+    if(Player.stage3.upgrades[15]==0)return;
+    Player.stage1 = startPlayer.stage1;
+    Player.stage2 = startPlayer.stage2;
+    Player.stage3 = startPlayer.stage3;
+    Player.prestige.uni += UniGain();
+    Player.prestige.uniresetcount += 1;
+    UpdateButtons();
+}
+function getprMask(idx) { return "prmask" + idx; }
+function calcprupgradecost(idx){
+    return Player_para.prestige.upgrade_cost[idx];
+}
+function purchaseprupgrades(idx) {
+    if (Player.prestige.uni >= calcprupgradecost(idx) && Player.prestige.upgrades[idx] ==0) {
+        Player.prestige.uni -= calcprupgradecost(idx);
+        Player.prestige.upgrades[idx] += 1;
+    }
+    hoverprupgrades(idx);
+    UpdateButtons();
+}
+var pr_cur_idx = -1;
+function hoverprupgrades(idx) {
+    pr_cur_idx = idx;
+    document.getElementById("prupgradename").innerHTML =
+        ((Player.prestige.upgrades[idx]) ?
+            `<span style="color: green;">Bought!</span>` :
+            `<span style="color: red;">Not Bought!</span>`);
+    document.getElementById("prupgradedesc").innerHTML =
+        `<span style="color: gold;">Desc: </span>` +
+        `<span>` + prupgradeEffect[idx] + `</span>`;
+    document.getElementById("prupgradecost").innerHTML =
+        `<span style="color: gold;">Cost: </span>` +
+        `<span>` + formatNumber(calcprupgradecost(idx)) + ` Universes</span>`;
+}

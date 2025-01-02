@@ -1,3 +1,21 @@
+/* Disable text selection */
+body {
+    user-select: none; /* Non-standard for some browsers */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+}
+
+/* Prevent dragging */
+* {
+    -webkit-user-drag: none; /* Safari */
+    -khtml-user-drag: none; /* Konqueror HTML */
+    -moz-user-drag: none; /* Firefox */
+    -o-user-drag: none; /* Opera */
+    user-drag: none; /* Non-standard */
+}
+
+
 /* --- Main --- */
 
 .bg {
@@ -444,8 +462,25 @@
 .prestigebutton:hover {
     background-color: #606080;
 }
-.colorchange {
+.prestigebutton-colorchange {
+    font-family: inherit;
+    font-weight: inherit;
+    background-color: #000000;
+    color: white;
+    height: 120px;
+    width: 400px;
+    z-index: 10;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, transform 0.3s;
+    font-size: 15px;
     animation: colorChange 3s infinite alternate;
+}
+.prestigebutton-colorchange:hover {
+    animation: colorChangeHover 3s infinite alternate;
 }
 @keyframes colorChange {
     0% {
@@ -453,6 +488,14 @@
     }
     100% {
         background-color: #211e5e; /* End color (blue) */
+    }
+}
+@keyframes colorChangeHover {
+    0% {
+        background-color: #606080; /* Start color (red) */
+    }
+    100% {
+        background-color: #413f6f; /* End color (blue) */
     }
 }
 

@@ -16,7 +16,8 @@
     <div id="app" class="bg">
         <div id="header" class="header">
             <div class="header-text" style="width: 470px;">Nullified Depths</div>
-            <div style="font-size: 22px;">Beta 0.1</div>
+            <div style="width: 40px;"></div>
+            <div style="font-size: 22px;">Beta 0.3</div>
             <div style="width: 450px;"></div>
             <button class="smallbutton" style="position: relative;"
                 onclick="DisplaySaveOptions()">Save</button>
@@ -60,7 +61,7 @@
                     </button>
                     <div style="height: 35px;"></div>
                     <div style="display: flex; flex-direction: row; width: 100%; text-align: center;">
-                        <div style="display: flex; flex-direction: column; width: 50%;">
+                        <div style="display: flex; flex-direction: column; width: 50%; align-items: center;">
                             <template>
                                 <table class="image-table">
                                     <tbody>
@@ -86,22 +87,20 @@
                             </div>
                             <div style="height: 70px;"></div>
                         </div>
-                        <div style="display: flex; flex-direction: column; width: 50%;">
-                            <div>Buy all current upgrades to go down 1 depth. (to be done)</div>
+                        <div style="display: flex; flex-direction: column; width: 50%; align-items: center;">
+                            <div>Buy all current upgrades to go down 1 depth.</div>
+                            <div style="height: 14px;"></div>
+                            <button id="depthbutton" onclick="DepthGoDown()" style="width: 70%;" class="purchasebutton-nafford">
+                                <div id="depthbuttontext">Placeholder</div>
+                            </button>
                             <div style="height: 25px;"></div>
                             <div> =-- Current Depth effect --=</div>
                             <div style="height: 14px;"></div>
-                            <div> None </div>
+                            <div id="currentdeptheffect"></div>
                             <div style="height: 25px;"></div>
                             <div> =-- Next Depth Effect --=</div>
                             <div style="height: 14px;"></div>
-                            <div> - Unlocks a new stage <br>
-                            - 10x Universes gain <br>
-                            - Unlocks 2 new rows of Prestige upgrades <br>
-                            <span style="color: #ffaaaa;"> - 5x less production to all</span><br>
-                            <span style="color: #ffaaaa;"> - ^0.9 production to all </span><br>
-                            - Upgrades that unlock other stages are cheaper <br>
-                            - All currency except Space foams gain a new effect </div>
+                            <div id="nextdeptheffect"></div>
                         </div>
                     </div>
                 </div>
@@ -112,7 +111,8 @@
                         <span class="buttontext"> You have </span>
                         <span id="spf"
                             style="color: #eec; font-size: 30px;">{{formatNumber(Player.stage1.spacefoam)}}</span>
-                        <span class="buttontext"> Space Foams. </span>
+                        <span class="buttontext"> Space Foams. </span><br>
+                        <span id="deffect1" style="color: #ffaaaa;"></span>
                     </div>
                     <div style="height: 70px;"></div>
                     <article id="buildings" style="width: 80%;">
@@ -173,7 +173,8 @@
                         <span class="buttontext"> You have </span>
                         <span id="pt"
                             style="color: #eec; font-size: 30px;">{{formatNumber(Player.stage1.spacefoam)}}</span>
-                        <span class="buttontext"> Planck Time. </span>
+                        <span class="buttontext"> Planck Time. </span><br>
+                        <span id="deffect2" style="color: #ffaaaa;"></span>
                     </div>
                     <div>You cannot create Structures within Time. However, you can reset your time to gain bonuses.
                     </div>
@@ -225,6 +226,7 @@
                         <span id="mtps"
                             style="color: #eec; font-size: 15px;">{{formatNumber(Player.stage1.spacefoam)}}</span>
                         <span style="font-size: 15px;"> per second)</span><br>
+                        <span id="deffect3" style="color: #ffaaaa;"></span><br>
                         <span id="sc1" style="color: #eec; font-size: 12px;"></span><br>
                         <span id="sc2" style="color: #eec; font-size: 12px;"></span><br>
                         <span id="sc3" style="color: #eec; font-size: 12px;"></span>

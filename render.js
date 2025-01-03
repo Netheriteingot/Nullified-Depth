@@ -1,5 +1,10 @@
 var UpdateLog = [
     [
+        "Beta 0.3",
+        "Added the Depth reset!",
+        "Rebalanced parts of early game."
+    ],
+    [
         "Beta 0.2",
         "Added a new prestige layer.",
         "Serious bug fixes."
@@ -20,6 +25,38 @@ var UpdateLog = [
         "Added content to the game."
     ]
 ]
+var CurrentDepthEffect = [
+    "",
+    " None ",
+    ` - Unlocks a new stage <br>
+                            - 10x Universes gain <br>
+                            - Unlocks 2 new rows of Prestige upgrades <br>
+                            <span style="color: #ffaaaa;"> - Nerfs to production (see each stage for effect)</span><br>
+                            <span style="color: #ffaaaa;"> - Universe reset requirement x1e6 </span><br>
+                            - Upgrades that unlock other stages are cheaper <br>
+                            - All currency except Space foams gain a new effect `
+]
+var NextDepthEffect = [
+    "",
+    ` - Unlocks a new stage <br>
+                            - 10x Universes gain <br>
+                            - Unlocks 2 new rows of Prestige upgrades <br>
+                            <span style="color: #ffaaaa;"> - Nerfs to production (see each stage for effect)</span><br>
+                            <span style="color: #ffaaaa;"> - Universe reset requirement x1e6 </span><br>
+                            - Upgrades that unlock other stages are cheaper <br>
+                            - All currency except Space foams gain a new effect `,
+    `To Be Continued`
+]
+function DepthEffect(dp, st){
+    if(dp==1)return ""
+    if(dp==2){
+        if(st==1)return "This stage production is nerfed to /5 ^0.9";
+        if(st==2)return "This stage production is nerfed to /2 ^0.9 <br> Your Planck Time multiplies Space Foams' gain by "+(formatNumber(Math.pow(1+Player.stage2.plancktime, 0.125)))+"x";
+        if(st==3)return "This stage production is nerfed to /5 ^0.9 <br> Your Mass multiplies Planck Time's gain by "+(formatNumber(Math.pow(1+1e9*Player.stage3.mt, 0.2)))+"x";
+        if(st==4)return "";
+    }
+    return ""
+}
 
 function UpdateOnLoad() {
     loadVue();
@@ -60,6 +97,9 @@ function RenderUpdateLog() {
 
 function render() {
     document.getElementById("dp").innerHTML = "Depth "+Player.depth;
+    document.getElementById("currentdeptheffect").innerHTML = CurrentDepthEffect[Player.depth];
+    document.getElementById("nextdeptheffect").innerHTML = NextDepthEffect[Player.depth];
+    for(var i=1; i<=max_stage;i++)document.getElementById("deffect"+i).innerHTML=DepthEffect(Player.depth, i);
 
     document.getElementById("spf").innerHTML = formatNumber(Player.stage1.spacefoam);
     document.getElementById("spf-side").innerHTML = formatNumber(Player.stage1.spacefoam) + " Space Foams";
@@ -135,12 +175,12 @@ function render() {
     
     document.getElementById("uni").innerHTML = formatNumber(Player.prestige.uni);
     document.getElementById("uniresettext").innerHTML=(
-        Player.stage3.upgrades[15]?
+        AbleToUni()?
         "Reset previous progress for "+formatNumber(UniGain())+" Universes!":
         "Reach 6.022e26 Relative Mass to reset!"
     );
     document.getElementById("unireset").className=(
-        Player.stage3.upgrades[15]? "prestigebutton-colorchange" : "prestigebutton"
+        AbleToUni()? "prestigebutton-colorchange" : "prestigebutton"
     );
     for (var i = 0; i < Player.prestige.upgrades.length; i++) {
         if (Player.prestige.upgrades[i] == 1) {
@@ -149,6 +189,14 @@ function render() {
             document.getElementById("prmask" + i).style.display = 'none'; // Hide the mask
         }
     }
+    document.getElementById("depthbuttontext").innerHTML=(
+        DepthGoDownReq()?
+        "Go down to the next Depth and do a universe reset!":
+        "You cannot go down to the next Depth!"
+    );
+    document.getElementById("depthbutton").className=(
+        DepthGoDownReq()? "prestigebutton-colorchange" : "prestigebutton"
+    );
 }
 
 function renderonBuy() {

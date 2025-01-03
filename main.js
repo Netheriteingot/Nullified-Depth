@@ -1,12 +1,31 @@
 var current_tab = -1;
 var max_stage = 3;
 
+function DepthGoDownReq(){
+    if (Player.depth == 1) {
+        let flag = 1;
+        for (var i = 0; i < Player.prestige.upgrades.length; i++)flag *= Player.prestige.upgrades[i];
+        if (flag == 1) return true;
+    }
+    return false;
+}
 function DepthGoDown() {
-    // some requisites
+    if(DepthGoDownReq()){
+        Player.depth += 1;
+        //Prestige();
+        let auto = Player.stage1.auto;
+        Player.stage1 = deepCopy(startPlayer.stage1);
+        Player.stage2 = deepCopy(startPlayer.stage2);
+        Player.stage3 = deepCopy(startPlayer.stage3);
+        for(var i=0;i<auto.length;i++)Player.stage1.auto[i] = auto[i];
+        Player.prestige.uni = 1;
+        Player.prestige.uniresetcount = 0;
+        UpdateButtons();
+    }
 }
 
 function StageUnlocked(stage) {
-    if(stage==0)return Player.stage3.upgrades[15] || Player.prestige.uniresetcount>0; //to be changed
+    if(stage==0)return Player.stage3.upgrades[15] || Player.prestige.uniresetcount > 0; //to be changed
     if(stage==1)return true;
     if(stage==2)return Player.stage1.upgrades[15];
     if(stage==3)return Player.stage2.upgrades[22];
@@ -210,6 +229,7 @@ function importFromClipboard() {
                 if (savedPlayer) Player = mergePlayer(savedPlayer);
             }
             console.log(Player);
+            UpdateButtons();
         })
         .catch(err => {
             console.error('Failed to read clipboard contents: ', err);

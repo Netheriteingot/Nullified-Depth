@@ -48,7 +48,7 @@ const Player_para = {
         buildingscostinflation:[1.2,10,3,100]
     },
     prestige: {
-        upgrade_cost: [1,2,2,2,3,3,3,17,2,16,128,20,1e3,1e3,1e3,71]
+        upgrade_cost: [1,2,2,2,3,3,3,17,2,16,96,10,40,15,128,71]
     }
 };
 const s1upgradeName = new Array("I", "II", "III", "1st Dimension", "Spacial Combination", "IV", "V", "2nd Dimension", "Spacial Rearrangement", "VI", "3rd Dimension", "4th Dimension", "Euler's Theorem", "Fractals", "Spacial Concatenation", "Timelapse", "Auto 1", "Auto 2", "Auto 3", "Auto 4");
@@ -98,10 +98,10 @@ const s1images = new Array(
 )
 const s2upgradeName = new Array("I","II","III","IV","Time Smoothing I","Time Lengthening I","Better Extensions","Continuum","V","VI","VII","VIII","Time Smoothing II","Time Lengthening II","An Upgrade","Temporal Amplifier","IX","X","XI","XII","Time Smoothing III","Time Lengthening III","New Stage","Infinite Ascent");
 const s2upgradeEffect = new Array(
-    "Multiply your Planck Time gain by x1.5 per level!",
-    "Multiply your Planck Time gain by x1.5 per level!",
-    "Multiply your Planck Time gain by x1.5 per level!",
-    "Multiply your Planck Time gain by x1.5 per level!",
+    "Multiply your Planck Time gain by x1.55 per level!",
+    "Multiply your Planck Time gain by x1.55 per level!",
+    "Multiply your Planck Time gain by x1.55 per level!",
+    "Multiply your Planck Time gain by x1.55 per level!",
     "Increases Planck Time production based on time spent this reset.",
     "You gain a bit more Time Extensions.",
     "Time Extensions effect is slightly improved.",
@@ -114,10 +114,10 @@ const s2upgradeEffect = new Array(
     "You gain a bit more Time Extensions again.",
     "Multiply your Planck Time gain by x1.075 per level! A small gift from the developer!",
     "First 4 columns of upgrades' base +1.03.",
-    "Multiply your Planck Time gain by x1.5 per level!",
-    "Multiply your Planck Time gain by x1.5 per level!",
-    "Multiply your Planck Time gain by x1.5 per level!",
-    "Multiply your Planck Time gain by x1.5 per level!",
+    "Multiply your Planck Time gain by x1.45 per level!",
+    "Multiply your Planck Time gain by x1.45 per level!",
+    "Multiply your Planck Time gain by x1.45 per level!",
+    "Multiply your Planck Time gain by x1.45 per level!",
     "Increases Planck Time production based on time spent this reset again.",
     "x2 Time Extension Gain. Simple.",
     "Unlock the next stage.",
@@ -189,19 +189,19 @@ const s3images = new Array(
 const prupgradeEffect = new Array(
     "x1.6 gain on everything, ignoring any in-stage softcaps.",
     "x1.3 all structures' production in Space and x1.5 Space Foams Gain.",
-    "x1.6 Planck Time Gain.",
-    "x1.8 Relative Mass Gain. (This boost is less affected by softcaps.)",
+    "x1.8 Planck Time Gain.",
+    "x2.1 Relative Mass Gain. (This boost is less affected by softcaps.)",
     "x1.3 all structures' production in Space and x1.8 Space Foams Gain.",
-    "x1.7 Planck Time Gain.",
-    "x1.7 Relative Mass Gain. (This boost is less affected by softcaps.)",
+    "x2 Planck Time Gain.",
+    "x2.2 Relative Mass Gain. (This boost is less affected by softcaps.)",
     "Get 1% of Time Extensions on prestige every real second.",
     "Gain 2 extra base Universes every reset.",
     "Gain 2 extra base Universes every reset.",
     "Gain 2 extra base Universes every reset.",
     "x2 Universes Gain.",
-    "Placeholder",
-    "Placeholder",
-    "Placeholder",
+    "x2 Universes Gain.",
+    "x1.6 gain on everything, ignoring any in-stage softcaps.",
+    "Stage unlock upgrades are marginally cheaper.",
     "Prestige Upgrade 1x8 is 3 times faster.",
 );
 const primages = new Array(
@@ -217,8 +217,8 @@ const primages = new Array(
     "./pic/prupgrade10.jpg",
     "./pic/prupgrade11.jpg",
     "./pic/prupgrade12.jpg",
-    "./pic/prupgrade13.jpg",
-    "./pic/prupgrade14.jpg",
+    "./pic/prupgrade12.jpg",
+    "./pic/prupgrade1.jpg",
     "./pic/prupgrade15.jpg",
     "./pic/prupgrade16.jpg",
 )
@@ -314,6 +314,7 @@ function s1prod(idx) {
     if (Player.stage1.upgrades[1]) prod[0] *= 3;
     if (Player.stage1.upgrades[2]) prod[0] *= 3;
     if(Player.prestige.upgrades[0])prod[0] *= 1.6;
+    if(Player.prestige.upgrades[13])prod[0] *= 1.6;
     if(Player.prestige.upgrades[1])prod[0] *= 1.5;
     if(Player.prestige.upgrades[1])for(var i=0;i<5;i++)prod[i]*=1.3;
     if(Player.prestige.upgrades[4])prod[0] *= 1.8;
@@ -329,6 +330,8 @@ function s1prod(idx) {
     if (Player.stage1.upgrades[14]) {
         for (var i = 0; i < 5; i++)prod[i] *= Math.pow(Player.stage1.spacefoam,0.005);
     }
+    if(Player.depth >= 2)prod[0] = Math.pow(prod[0], 0.9);
+    if(Player.depth >= 2)prod[0] *= 0.2 * Math.pow(1+Player.stage2.plancktime, 0.125);
     return prod[idx];
 }
 function s1DoEveryCycle() {
@@ -343,9 +346,14 @@ function s1DoEveryCycle() {
     for(var i=0;i<5;i++)if(Player.stage1.auto[i] && s1auto(i))purchases1buildings(i);
 }
 
+function calcs1upgradecost(idx){
+    let cost = Player_para.stage1.upgrade_cost[idx];
+    if(idx==15 && Player.prestige.upgrades[14]) cost = Math.pow(cost, 0.3);
+    return cost;
+}
 function purchases1upgrades(idx) {
-    if (Player.stage1.spacefoam >= Player_para.stage1.upgrade_cost[idx] && Player.stage1.upgrades[idx] == 0) {
-        Player.stage1.spacefoam -= Player_para.stage1.upgrade_cost[idx];
+    if (Player.stage1.spacefoam >= calcs1upgradecost(idx) && Player.stage1.upgrades[idx] == 0) {
+        Player.stage1.spacefoam -= calcs1upgradecost(idx);
         Player.stage1.upgrades[idx] = 1;
     }
     hovers1upgrades(idx);
@@ -403,7 +411,7 @@ function hovers1upgrades(idx) {
         `<span>` + s1upgradeEffect[idx] + `</span>`;
     document.getElementById("s1upgradecost").innerHTML =
         `<span style="color: gold;">Cost: </span>` +
-        `<span>` + formatNumber(Player_para.stage1.upgrade_cost[idx]) + ` Space Foams</span>`;
+        `<span>` + formatNumber(calcs1upgradecost(idx)) + ` Space Foams</span>`;
     document.getElementById("s1upgradeeff").innerHTML =
         `<span style="color: gold;">Effect: </span>` +
         `<span>` + gets1UpgradeEffect(idx) + `</span>`;
@@ -426,7 +434,9 @@ setInterval(function () {
 function gets2Mask(idx) { return "s2mask" + idx; }
 function gets2Mask2(idx) { return "s2maskxxx2" + idx; }
 function calcs2upgradecost(idx){
-    return Player_para.stage2.upgrade_cost[idx]*Math.pow(Player_para.stage2.upgrade_cost_scaling[idx],Player.stage2.upgrades[idx]);
+    let cost =  Player_para.stage2.upgrade_cost[idx]*Math.pow(Player_para.stage2.upgrade_cost_scaling[idx],Player.stage2.upgrades[idx]);
+    if(idx == 22 && Player.prestige.upgrades[14]) cost = Math.pow(cost, 0.25);
+    return cost;
 }
 function purchases2upgrades(idx) {
     if (Player.stage2.plancktime >= calcs2upgradecost(idx) && Player.stage2.upgrades[idx] < Player_para.stage2.upgrade_max_level[idx]) {
@@ -517,24 +527,27 @@ function calcs2prestigeeffect(){
 function tps(){
     var prod=1;
     prod*=calcs2prestigeeffect();
-    prod*=Math.pow(1.5+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[0]);
-    prod*=Math.pow(1.5+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[1]);
-    prod*=Math.pow(1.5+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[2]);
-    prod*=Math.pow(1.5+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[3]);
+    prod*=Math.pow(1.55+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[0]);
+    prod*=Math.pow(1.55+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[1]);
+    prod*=Math.pow(1.55+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[2]);
+    prod*=Math.pow(1.55+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[3]);
     prod*=Math.pow(1.5+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[8]);
     prod*=Math.pow(1.5+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[9]);
     prod*=Math.pow(1.5+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[10]);
     prod*=Math.pow(1.5+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[11]);
-    prod*=Math.pow(1.5+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[16]);
-    prod*=Math.pow(1.5+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[17]);
-    prod*=Math.pow(1.5+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[18]);
-    prod*=Math.pow(1.5+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[19]);
+    prod*=Math.pow(1.45+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[16]);
+    prod*=Math.pow(1.45+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[17]);
+    prod*=Math.pow(1.45+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[18]);
+    prod*=Math.pow(1.45+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[19]);
     prod*=Math.pow(1.075,Player.stage2.upgrades[14]);
     prod*=Math.pow(5,Player.stage2.upgrades[23]);
     if(Player.prestige.upgrades[0])prod*=1.6;
-    if(Player.prestige.upgrades[2])prod*=1.6;
-    if(Player.prestige.upgrades[5])prod*=1.7;
+    if(Player.prestige.upgrades[13])prod*=1.6;
+    if(Player.prestige.upgrades[2])prod*=1.8;
+    if(Player.prestige.upgrades[5])prod*=2;
     prod*=Math.pow(Player.stage2.tsitex+1,0.18*Player.stage2.upgrades[4]+0.1*Player.stage2.upgrades[12]+0.1*Player.stage2.upgrades[20]);
+    if(Player.depth >= 2)prod = Math.pow(prod, 0.9);
+    if(Player.depth >= 2)prod *= 0.5 * Math.pow(1+1e9*Player.stage3.mt, 0.2);
     return prod;
 }
 
@@ -613,7 +626,9 @@ function s3BuyMaxUpgrades(){
 
 function gets3Mask(idx) { return "s3mask" + idx; }
 function calcs3upgradecost(idx){
-    return Player_para.stage3.upgrade_cost[idx];
+    let cost = Player_para.stage3.upgrade_cost[idx];
+    if(idx==15 && Player.prestige.upgrades[14]) cost = 1e-9*Math.pow(cost*1e9, 0.4);
+    return cost;
 }
 function purchases3upgrades(idx) {
     if (Player.stage3.mt >= calcs3upgradecost(idx) && Player.stage3.upgrades[idx] ==0) {
@@ -706,21 +721,24 @@ function s3prod(){
     prod*=(Math.pow(3,Player.stage3.buildings[3]));
     if(prod>1)prod=Math.pow(prod,0.5);
     if(prod>1e4)prod=100*Math.pow(prod,0.5);
-    if(Player.prestige.upgrades[3])prod*=1.8;
-    if(Player.prestige.upgrades[6])prod*=1.7;
+    if(Player.prestige.upgrades[3])prod*=2.1;
+    if(Player.prestige.upgrades[6])prod*=2.2;
     if(prod>1e8){
         if(Player.stage3.upgrades[14])prod=10*Math.pow(prod,0.875);
         else prod=100*Math.pow(prod,0.75);
     }
     if(Player.prestige.upgrades[0])prod*=1.6;
+    if(Player.prestige.upgrades[13])prod*=1.6;
     if(Player.stage3.upgrades[13])prod*=Math.pow(1.4,Math.max(Player.stage3.buildingsbought[2]-20,0));
+    if(Player.depth >= 2)prod = 1e-9*Math.pow(prod*1e9, 0.9);
+    if(Player.depth >= 2)prod *= 0.2;
     return prod;
 }
 
 function s3DoEveryCycle(){
-    Player.stage3.mt+=s3prod()/20/**optickspeedmult()*/;
+    Player.stage3.mt+=s3prod()/20*optickspeedmult();
     if(Player.stage3.upgrades[11])Player.stage3.buildings[0]+=(Math.pow(Math.pow(3,Player.stage3.buildings[3]),0.5*Player.stage3.upgrades[6]))*(Player.stage3.buildings[1]*(Player.stage3.buildingsbought[1]))*(Math.pow(1+Player.stage3.buildings[0],0.4*Player.stage3.upgrades[12]))/1000/**optickspeedmult()*/;
-    Player.stage3.buildings[1]+=(Math.pow(3,Player.stage3.buildings[2])-1)*(Math.pow(Math.pow(3,Player.stage3.buildings[3]),0.25*Player.stage3.upgrades[6]))/1000/**optickspeedmult()*/;
+    Player.stage3.buildings[1]+=(Math.pow(3,Player.stage3.buildings[2])-1)*(Math.pow(Math.pow(3,Player.stage3.buildings[3]),0.25*Player.stage3.upgrades[6]))/1000*optickspeedmult();
 }
 
 setInterval(function () {
@@ -728,17 +746,24 @@ setInterval(function () {
 }, 50);
 
 
+
+function AbleToUni() {
+    if(!Player.prestige.upgrades[14] && Player.depth == 1) return Player.stage3.upgrades[15];
+    if(Player.depth == 2) return (Player.stage3.mt >= 6.02e29);
+    else return (Player.stage3.mt >= 6.02e23);
+}
 function UniGain(){
     var gain = 5;
     if(Player.prestige.upgrades[8]) gain += 2;
     if(Player.prestige.upgrades[9]) gain += 2;
     if(Player.prestige.upgrades[10]) gain += 2;
     if(Player.prestige.upgrades[11]) gain *= 2;
+    if(Player.prestige.upgrades[12]) gain *= 2;
     return gain;
 }
 
 function Prestige(){
-    if(Player.stage3.upgrades[15]==0)return;
+    if(!AbleToUni())return;
     let auto = Player.stage1.auto;
     Player.stage1 = deepCopy(startPlayer.stage1);
     Player.stage2 = deepCopy(startPlayer.stage2);

@@ -42,6 +42,24 @@ function formatNumber(num) {
 
 // Merger
 
+function deepCopy(obj) {
+    if (obj === null || typeof obj !== 'object') {
+        return obj; // Return the value if obj is not an object
+    }
+
+    if (Array.isArray(obj)) {
+        return obj.map(item => deepCopy(item)); // Recursively copy arrays
+    }
+
+    const newObj = {};
+    for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            newObj[key] = deepCopy(obj[key]); // Recursively copy properties
+        }
+    }
+    return newObj;
+}
+
 function mergePlayer(savedPlayer) {
     let newPlayer = Object.assign({}, startPlayer);
 

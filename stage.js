@@ -739,9 +739,11 @@ function UniGain(){
 
 function Prestige(){
     if(Player.stage3.upgrades[15]==0)return;
-    Player.stage1 = startPlayer.stage1;
-    Player.stage2 = startPlayer.stage2;
-    Player.stage3 = startPlayer.stage3;
+    let auto = Player.stage1.auto;
+    Player.stage1 = deepCopy(startPlayer.stage1);
+    Player.stage2 = deepCopy(startPlayer.stage2);
+    Player.stage3 = deepCopy(startPlayer.stage3);
+    for(var i=0;i<auto.length;i++)Player.stage1.auto[i] = auto[i];
     Player.prestige.uni += UniGain();
     Player.prestige.uniresetcount += 1;
     UpdateButtons();

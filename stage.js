@@ -20,7 +20,8 @@ const startPlayer = {
         buildings: [0,0,0,0],
         buildingsbought: [0,0,0,0],
         auto: [0,0,0,0],
-        upgrades: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+        upgrades: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        auto: [0,0,0,0]
     },
     stage4: {
         mo: 0,
@@ -283,7 +284,7 @@ const pr2upgradeEffect = new Array(
     "x2 Universe Gain.",
     "x2 Universe Gain.",
     "Unlock automation for Multipliers in Chemical stage.",
-    "VW5sb2NrIGF1dG9tYXRpb24gZm9yIFN1YmF0b21pYyBzdGFnZS4= (not implemented yet)",
+    "Unlock automation for Subatomic stage.",
     "Buying structures only consumes half as much resource.",
     "Automatically store 1% of your Multipliers every second.",
     "Add 0.05 to base Universe gain per OoM of Space Foams.",
@@ -747,6 +748,9 @@ function purchases3buildings(idx) {
     }
     //app.$forceUpdate();
 }
+function s3swapauto(idx){
+    Player.stage3.auto[idx]=1-Player.stage3.auto[idx];
+}
 function s3BuyMaxUpgrades(){
     for(var i=0;i<Player.stage3.upgrades.length;i++)purchases3upgrades(i);
 }
@@ -877,6 +881,7 @@ function s3DoEveryCycle(){
     Player.stage3.mt+=s3prod()/20*optickspeedmult();
     if(Player.stage3.upgrades[11])Player.stage3.buildings[0]+=(Math.pow(Math.pow(3,Player.stage3.buildings[3]),0.5*Player.stage3.upgrades[6]))*(Player.stage3.buildings[1]*(Player.stage3.buildingsbought[1]))*(Math.pow(1+Player.stage3.buildings[0],0.4*Player.stage3.upgrades[12]))/1000/**optickspeedmult()*/;
     Player.stage3.buildings[1]+=(Math.pow(3,Player.stage3.buildings[2])-1)*(Math.pow(Math.pow(3,Player.stage3.buildings[3]),0.25*Player.stage3.upgrades[6]))/1000*optickspeedmult();
+    for(var i=0;i<4;i++)if(Player.stage3.auto[i])purchases3buildings(i);
 }
 
 setInterval(function () {

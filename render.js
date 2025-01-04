@@ -73,14 +73,14 @@ function UpdateOnLoad() {
     UpdateButtons();
 }
 function UpdateButtons() {
-    for (var i = 0; i <= max_stage; i++) {
+    for (const i of current_stage) {
         if (StageUnlocked(i)) document.getElementById("button" + i).style = "display: flex;";
         else document.getElementById("button" + i).style = "display: none;";
     }
 }
 function SetTab(tab) {
     current_tab = tab;
-    for (var i = 0; i <= max_stage; i++) {
+    for (const i of current_stage) {
         if (i == tab) document.getElementById("stage" + i).style = "display: flex;";
         else document.getElementById("stage" + i).style = "display: none;";
     }
@@ -108,7 +108,7 @@ function render() {
     document.getElementById("dp").innerHTML = "Depth "+Player.depth;
     document.getElementById("currentdeptheffect").innerHTML = CurrentDepthEffect[Player.depth];
     document.getElementById("nextdeptheffect").innerHTML = NextDepthEffect[Player.depth];
-    for(var i=1; i<=max_stage;i++)document.getElementById("deffect"+i).innerHTML=DepthEffect(Player.depth, i);
+    for(const i of non_meta_stage)document.getElementById("deffect"+i).innerHTML=DepthEffect(Player.depth, i);
 
     if(Player.depth >= 2)document.getElementById("pu2").style="display: flex;";
 
@@ -174,6 +174,16 @@ function render() {
             document.getElementById("s3mask" + i).style.display = 'none'; // Hide the mask
         }
     }
+    for(var i=0;i<4;i++){
+        var s3autoclass = "";
+        if(Player.prestige.upgrades2[9]){
+            s3autoclass = "smallpurchasebutton";
+            s3autoclass += (Player.stage3.auto[i]?"-auto":"-nauto");
+        }
+        else s3autoclass = "purchasebutton-auto-hidden";
+        document.getElementById("s3auto"+i).className = s3autoclass;
+        document.getElementById("s3auto"+i).innerHTML = (Player.stage3.auto[i]?"Auto ON":"Auto OFF");
+    }
     for(var i=0;i<4;i++)document.getElementById("b"+(i+1)+"effect").innerHTML=s3getBuildingEff(i+1);
     if(s3prod()>0.01)document.getElementById("sc1").innerHTML="Particles are escaping. Mass production above 1 will be raised to ^0.5.";
     if(s3prod()>1e2)document.getElementById("sc2").innerHTML="Particles are escaping even more rapidly. Mass production above 1e4 will again be raised to ^0.5.";
@@ -200,7 +210,7 @@ function render() {
     `<span style="color: gold;">Effect: </span>` +
     `<span>` + gets4UpgradeEffect(s4_cur_idx) + `</span>`;
     
-    for(var i=1;i<=max_stage;i++){
+    for(const i of non_meta_stage){
         if(Player.op>0.1)document.getElementById("op"+i).innerHTML="Offline time: "+Player.op.toFixed(0)+" seconds -> "+optickspeedmult().toFixed(1)+"x faster ticks";
         else document.getElementById("op"+i).innerHTML="";
     }

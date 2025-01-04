@@ -1,5 +1,6 @@
 var current_tab = -1;
-var max_stage = 4;
+const current_stage = [0,1,2,3,4]
+const non_meta_stage = [1,2,3,4]
 
 function DepthGoDownReq(){
     if (Player.depth == 1) {
@@ -29,7 +30,7 @@ function StageUnlocked(stage) {
     if(stage==1)return true;
     if(stage==2)return Player.stage1.upgrades[15];
     if(stage==3)return Player.stage2.upgrades[22];
-    if(stage==4)return (Player.stage3.upgrades[15] && Player.prestige.upgrades2[0]) || Player.prestige.uniresetcount > 0;
+    if(stage==4)return Player.depth >= 2 && (Player.stage3.upgrades[15] && Player.prestige.upgrades2[0]) || Player.prestige.uniresetcount > 0;
     return false;
 }
 

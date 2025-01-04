@@ -268,6 +268,46 @@ body {
 .fixedpurchasebutton-nauto:hover {
     background-color: #606080;
 }
+.smallpurchasebutton-auto {
+    font-family: inherit;
+    font-weight: inherit;
+    background-color: #1f1e33;
+    color: white;
+    height: 40px;
+    width: 100px;
+    font-size: 15px;
+    border: 3px solid green;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 12;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.smallpurchasebutton-auto:hover {
+    background-color: #606080;
+}
+.smallpurchasebutton-nauto {
+    font-family: inherit;
+    font-weight: inherit;
+    background-color: #1f1e33;
+    color: white;
+    height: 40px;
+    width: 100px;
+    font-size: 15px;
+    border: 3px solid red;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 12;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.smallpurchasebutton-nauto:hover {
+    background-color: #606080;
+}
 
 .purchasebutton-small-afford {
     font-family: inherit;

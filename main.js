@@ -34,6 +34,10 @@ function StageUnlocked(stage) {
     return false;
 }
 
+function DoOnRead(){
+    if(version==1 && Player.depth == 1)Player.stage4 = deepCopy(startPlayer.stage4);
+}
+
 /* --- Notation --- */
 
 function formatNumber(num) {
@@ -150,6 +154,7 @@ function readData() {
         const playerData = atob(base64Data); // Decode from Base64
         let savedPlayer = JSON.parse(playerData);
         if (savedPlayer) Player = mergePlayer(savedPlayer);
+        DoOnRead();
     }
     console.log(Player);
 }
@@ -219,6 +224,7 @@ document.getElementById('fileInput').addEventListener('change', (event) => {
                 if (savedPlayer) Player = mergePlayer(savedPlayer);
             }
             console.log(Player);
+            DoOnRead();
         };
         reader.readAsDataURL(file); // Read the file as a data URL
     }
@@ -248,6 +254,7 @@ function importFromClipboard() {
                 if (savedPlayer) Player = mergePlayer(savedPlayer);
             }
             console.log(Player);
+            DoOnRead();
             UpdateButtons();
         })
         .catch(err => {

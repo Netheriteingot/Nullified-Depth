@@ -40,7 +40,7 @@ const startPlayer = {
     },
     timestamp: 0,
     op: 0,
-    version: 1
+    version: 2
 };
 const Player_para = {
     stage1: {

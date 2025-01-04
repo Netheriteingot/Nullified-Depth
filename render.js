@@ -1,5 +1,11 @@
 var UpdateLog = [
     [
+        "Beta 0.3.1",
+        "More depth 2 content.",
+        "Bug fixes, sorry for the inconvenience",
+        "Some great QoL stuff!"
+    ],
+    [
         "Beta 0.3",
         "Added the Depth reset!",
         "Rebalanced parts of early game."
@@ -30,7 +36,7 @@ var CurrentDepthEffect = [
     " None ",
     ` - Unlocks a new stage <br>
                             - 10x Universes gain <br>
-                            - Unlocks 2 new rows of Prestige upgrades <br>
+                            - Unlocks 3 new rows of Prestige upgrades <br>
                             <span style="color: #ffaaaa;"> - Nerfs to production (see each stage for effect)</span><br>
                             <span style="color: #ffaaaa;"> - Universe reset requirement x1e6 </span><br>
                             - Upgrades that unlock other stages are cheaper <br>
@@ -40,7 +46,7 @@ var NextDepthEffect = [
     "",
     ` - Unlocks a new stage <br>
                             - 10x Universes gain <br>
-                            - Unlocks 2 new rows of Prestige upgrades <br>
+                            - Unlocks 3 new rows of Prestige upgrades <br>
                             <span style="color: #ffaaaa;"> - Nerfs to production (see each stage for effect)</span><br>
                             <span style="color: #ffaaaa;"> - Universe reset requirement x1e6 </span><br>
                             - Upgrades that unlock other stages are cheaper <br>
@@ -52,10 +58,13 @@ function DepthEffect(dp, st){
     if(dp==2){
         if(st==1)return "This stage production is nerfed to /5 ^0.9";
         if(st==2)return "This stage production is nerfed to /2 ^0.9 <br> Your Planck Time multiplies Space Foams' gain by "+(formatNumber(Math.pow(1+Player.stage2.plancktime, 0.125)))+"x";
-        if(st==3)return "This stage production is nerfed to /5 ^0.9 <br> Your Mass multiplies Planck Time's gain by "+(formatNumber(Math.pow(1+1e9*Player.stage3.mt, 0.2)))+"x";
-        if(st==4)return "";
+        if(st==3)return "This stage production is nerfed to /5 ^0.9 <br> Your Mass multiplies Planck Time's gain by "+(formatNumber(Math.pow(1+1e9*Player.stage3.mt, 0.15)))+"x";
+        if(st==4){
+            if(Player.stage4.upgrades[8]) return "Your Molecules multiplies Mass gain by "+(formatNumber(Math.pow(Player.stage4.mo+1, 0.25)))+"x";
+            else return "";
+        }
     }
-    return ""
+    return "";
 }
 
 function UpdateOnLoad() {
@@ -100,6 +109,8 @@ function render() {
     document.getElementById("currentdeptheffect").innerHTML = CurrentDepthEffect[Player.depth];
     document.getElementById("nextdeptheffect").innerHTML = NextDepthEffect[Player.depth];
     for(var i=1; i<=max_stage;i++)document.getElementById("deffect"+i).innerHTML=DepthEffect(Player.depth, i);
+
+    if(Player.depth >= 2)document.getElementById("pu2").style="display: flex;";
 
     document.getElementById("spf").innerHTML = formatNumber(Player.stage1.spacefoam);
     document.getElementById("spf-side").innerHTML = formatNumber(Player.stage1.spacefoam) + " Space Foams";
@@ -163,21 +174,43 @@ function render() {
             document.getElementById("s3mask" + i).style.display = 'none'; // Hide the mask
         }
     }
-    for(var i=1;i<=max_stage;i++){
-        if(Player.op>0.1)document.getElementById("op"+i).innerHTML="Offline time: "+Player.op.toFixed(0)+" seconds -> "+optickspeedmult().toFixed(1)+"x faster ticks";
-        else document.getElementById("op"+i).innerHTML="";
-    }
     for(var i=0;i<4;i++)document.getElementById("b"+(i+1)+"effect").innerHTML=s3getBuildingEff(i+1);
     if(s3prod()>0.01)document.getElementById("sc1").innerHTML="Particles are escaping. Mass production above 1 will be raised to ^0.5.";
     if(s3prod()>1e2)document.getElementById("sc2").innerHTML="Particles are escaping even more rapidly. Mass production above 1e4 will again be raised to ^0.5.";
     if(s3prod()>1e6)document.getElementById("sc3").innerHTML="Particles are escaping even more rapidly. Mass production above 1e8 will again be raised to ^0."+(Player.stage3.upgrades[14]?"875":"75")+".";
+    
+    document.getElementById("mo").innerHTML = formatNumber(Player.stage4.mo);
+    document.getElementById("mops").innerHTML = formatNumber(s4prod());
+    document.getElementById("mo-side").innerHTML = formatNumber(Player.stage4.mo) + " Molecules";
+    document.getElementById("s4buy").className = "fixedpurchasebutton"+(Player.stage4.mo>=MultCost()?"-afford":"-nafford");
+    document.getElementById("s4store").className = "fixedpurchasebutton"+(Player.stage4.mult>Player.stage4.stored_mult?"-afford":"-nafford");
+    document.getElementById("s4buy").innerHTML = "Buy | "+formatNumber(MultCost())+" Molecules";
+    if(Player.prestige.upgrades2[8])document.getElementById("s4auto").className="fixedpurchasebutton"+(Player.stage4.auto?"-auto":"-nauto");
+    else document.getElementById("s4auto").className="purchasebutton-auto-hidden";
+    document.getElementById("s4mult").innerHTML=""+formatNumber(Math.pow(2,Player.stage4.mult))+"x";
+    document.getElementById("s4storedmult").innerHTML=""+formatNumber(Math.pow(1.6,Player.stage4.stored_mult))+"x";
+    for (var i = 0; i < s4upgradeName.length; i++) {
+        if (Player.stage4.upgrades[i] == 1) {
+            document.getElementById("s4mask" + i).style.display = 'block'; // Show the mask
+        } else {
+            document.getElementById("s4mask" + i).style.display = 'none'; // Hide the mask
+        }
+    }
+    document.getElementById("s4upgradeeff").innerHTML =
+    `<span style="color: gold;">Effect: </span>` +
+    `<span>` + gets4UpgradeEffect(s4_cur_idx) + `</span>`;
+    
+    for(var i=1;i<=max_stage;i++){
+        if(Player.op>0.1)document.getElementById("op"+i).innerHTML="Offline time: "+Player.op.toFixed(0)+" seconds -> "+optickspeedmult().toFixed(1)+"x faster ticks";
+        else document.getElementById("op"+i).innerHTML="";
+    }
 
     
     document.getElementById("uni").innerHTML = formatNumber(Player.prestige.uni);
     document.getElementById("uniresettext").innerHTML=(
         AbleToUni()?
         "Reset previous progress for "+formatNumber(UniGain())+" Universes!":
-        "Reach 6.022e26 Relative Mass to reset!"
+        "Reach "+formatNumber(UniReq())+" Relative Mass to reset!"
     );
     document.getElementById("unireset").className=(
         AbleToUni()? "prestigebutton-colorchange" : "prestigebutton"
@@ -187,6 +220,13 @@ function render() {
             document.getElementById("prmask" + i).style.display = 'block'; // Show the mask
         } else {
             document.getElementById("prmask" + i).style.display = 'none'; // Hide the mask
+        }
+    }
+    for (var i = 0; i < Player.prestige.upgrades2.length; i++) {
+        if (Player.prestige.upgrades2[i] == 1) {
+            document.getElementById("pr2mask" + i).style.display = 'block'; // Show the mask
+        } else {
+            document.getElementById("pr2mask" + i).style.display = 'none'; // Hide the mask
         }
     }
     document.getElementById("depthbuttontext").innerHTML=(

@@ -1,5 +1,5 @@
 var current_tab = -1;
-var max_stage = 3;
+var max_stage = 4;
 
 function DepthGoDownReq(){
     if (Player.depth == 1) {
@@ -29,6 +29,8 @@ function StageUnlocked(stage) {
     if(stage==1)return true;
     if(stage==2)return Player.stage1.upgrades[15];
     if(stage==3)return Player.stage2.upgrades[22];
+    if(stage==4)return (Player.stage3.upgrades[15] && Player.prestige.upgrades2[0]) || Player.prestige.uniresetcount > 0;
+    return false;
 }
 
 /* --- Notation --- */
@@ -107,6 +109,22 @@ function mergePlayer(savedPlayer) {
     }
 
     newPlayer.stage3 = Object.assign({}, startPlayer.stage3, newPlayer.stage3);
+
+    if (savedPlayer.stage4) {
+        newPlayer.stage4 = Object.assign({}, newPlayer.stage4, savedPlayer.stage4);
+    } else {
+        newPlayer.stage4 = Object.assign({}, startPlayer.stage4);
+    }
+
+    newPlayer.stage4 = Object.assign({}, startPlayer.stage4, newPlayer.stage4);
+
+    if (savedPlayer.prestige) {
+        newPlayer.prestige = Object.assign({}, newPlayer.prestige, savedPlayer.prestige);
+    } else {
+        newPlayer.prestige = Object.assign({}, startPlayer.prestige);
+    }
+
+    newPlayer.prestige = Object.assign({}, startPlayer.prestige, newPlayer.prestige);
 
     console.log("newPlayer: ", newPlayer);
     return newPlayer;

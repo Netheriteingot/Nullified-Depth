@@ -147,6 +147,47 @@ body {
 .purchasebutton-nafford:hover {
     background-color: #606080;
 }
+.fixedpurchasebutton-afford {
+    font-family: inherit;
+    font-weight: inherit;
+    background-color: #1f1e33;
+    color: white;
+    height: 40px;
+    width: 240px;
+    font-size: 15px;
+    border: 3px solid darkblue;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 12;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.fixedpurchasebutton-afford:hover {
+    background-color: #606080;
+}
+
+.fixedpurchasebutton-nafford {
+    font-family: inherit;
+    font-weight: inherit;
+    background-color: #1f1e33;
+    color: white;
+    height: 40px;
+    width: 240px;
+    font-size: 15px;
+    border: 3px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 12;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.fixedpurchasebutton-nafford:hover {
+    background-color: #606080;
+}
 .purchasebutton-auto {
     font-family: inherit;
     font-weight: inherit;
@@ -185,6 +226,46 @@ body {
 }
 
 .purchasebutton-nauto:hover {
+    background-color: #606080;
+}
+.fixedpurchasebutton-auto {
+    font-family: inherit;
+    font-weight: inherit;
+    background-color: #1f1e33;
+    color: white;
+    height: 40px;
+    width: 240px;
+    font-size: 15px;
+    border: 3px solid green;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 12;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.fixedpurchasebutton-auto:hover {
+    background-color: #606080;
+}
+.fixedpurchasebutton-nauto {
+    font-family: inherit;
+    font-weight: inherit;
+    background-color: #1f1e33;
+    color: white;
+    height: 40px;
+    width: 240px;
+    font-size: 15px;
+    border: 3px solid red;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 12;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.fixedpurchasebutton-nauto:hover {
     background-color: #606080;
 }
 

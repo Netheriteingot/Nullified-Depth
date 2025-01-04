@@ -45,6 +45,11 @@
                     <div id="mt-side" class="buttonminitext">0 Relative Mass
                     </div>
                 </button>
+                <button id="button4" onclick="SetTab(4)" class="stagebutton">
+                    <div class="buttontext">Chemical</div>
+                    <div id="mo-side" class="buttonminitext">0 Molecules
+                    </div>
+                </button>
             </div>
             <div class="container">
                 <div id="stage0" class="stage">
@@ -61,9 +66,9 @@
                     </button>
                     <div style="height: 35px;"></div>
                     <div style="display: flex; flex-direction: row; width: 100%; text-align: center;">
-                        <div style="display: flex; flex-direction: column; width: 50%; align-items: center;">
+                        <div style="display: flex; flex-direction: column; width: 50%; height: 100%; align-items: center; justify-content: flex-start;">
                             <template>
-                                <table class="image-table">
+                                <table id="pu1" class="image-table" style="display: flex;">
                                     <tbody>
                                         <tr v-for="row in prrows" :key="row"
                                             style="display: flex; flex-direction: row; justify-content: center;">
@@ -79,8 +84,26 @@
                                     </tbody>
                                 </table>
                             </template>
+                            <div style="height: 7px;"></div>
+                            <template>
+                                <table id="pu2" class="image-table" style="display: none;">
+                                    <tbody>
+                                        <tr v-for="row in pr2rows" :key="row"
+                                            style="display: flex; flex-direction: row; justify-content: center;">
+                                            <td v-for="(image, index) in pr2images.slice((row - 1) * 8, row * 8)" :key="index">
+                                                <div class="image-container">
+                                                    <img :src="image" :alt="'Image ' + (index + 1 + (row - 1) * 8)"
+                                                        class="grid-image" @mouseenter="hoverpr2upgrades(index+(row-1)*8)"
+                                                        @click="purchasepr2upgrades(index+(row-1)*8)" />
+                                                    <div class="mask" :id="getpr2Mask(index+row*8-8)"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </template>
                             <div style="height: 30px;"></div>
-                            <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="display: flex; flex-direction: column; align-items: center; height: 70px;">
                                 <div id="prupgradename"></div>
                                 <div id="prupgradecost"></div>
                                 <div id="prupgradedesc" style="text-align: center;"></div>
@@ -112,7 +135,7 @@
                         <span id="spf"
                             style="color: #eec; font-size: 30px;">{{formatNumber(Player.stage1.spacefoam)}}</span>
                         <span class="buttontext"> Space Foams. </span><br>
-                        <span id="deffect1" style="color: #ffaaaa;"></span>
+                        <span id="deffect1" style="color: #ffaaaa; font-size: 12px;"></span>
                     </div>
                     <div style="height: 70px;"></div>
                     <article id="buildings" style="width: 80%;">
@@ -158,7 +181,7 @@
                     <div style="height: 10px;"></div>
                     <button class="purchasebutton-nafford" onclick="s1BuyMaxUpgrades()">Buy Max Upgrades</button>
                     <div style="height: 10px;"></div>
-                    <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div style="display: flex; flex-direction: column; align-items: center; height: 70px;">
                         <div id="s1upgradename"></div>
                         <div id="s1upgradecost"></div>
                         <div id="s1upgradedesc" style="text-align: center;"></div>
@@ -174,7 +197,7 @@
                         <span id="pt"
                             style="color: #eec; font-size: 30px;">{{formatNumber(Player.stage1.spacefoam)}}</span>
                         <span class="buttontext"> Planck Time. </span><br>
-                        <span id="deffect2" style="color: #ffaaaa;"></span>
+                        <span id="deffect2" style="color: #ffaaaa; font-size: 12px;"></span>
                     </div>
                     <div>You cannot create Structures within Time. However, you can reset your time to gain bonuses.
                     </div>
@@ -206,7 +229,7 @@
                     <div style="height: 10px;"></div>
                     <button class="purchasebutton-nafford" onclick="s2BuyMaxUpgrades()">Buy Max Upgrades</button>
                     <div style="height: 10px;"></div>
-                    <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div style="display: flex; flex-direction: column; align-items: center; height: 70px;">
                         <div id="s2upgradename"></div>
                         <div id="s2upgradecost"></div>
                         <div id="s2upgradedesc" style="text-align: center;"></div>
@@ -226,7 +249,7 @@
                         <span id="mtps"
                             style="color: #eec; font-size: 15px;">{{formatNumber(Player.stage1.spacefoam)}}</span>
                         <span style="font-size: 15px;"> per second)</span><br>
-                        <span id="deffect3" style="color: #ffaaaa;"></span><br>
+                        <span id="deffect3" style="color: #ffaaaa; font-size: 12px;"></span><br>
                         <span id="sc1" style="color: #eec; font-size: 12px;"></span><br>
                         <span id="sc2" style="color: #eec; font-size: 12px;"></span><br>
                         <span id="sc3" style="color: #eec; font-size: 12px;"></span>
@@ -299,10 +322,83 @@
                     <div style="height: 10px;"></div>
                     <button class="purchasebutton-nafford" onclick="s3BuyMaxUpgrades()">Buy Max Upgrades</button>
                     <div style="height: 10px;"></div>
-                    <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div style="display: flex; flex-direction: column; align-items: center; height: 70px;">
                         <div id="s3upgradename"></div>
                         <div id="s3upgradecost"></div>
                         <div id="s3upgradedesc" style="text-align: center;"></div>
+                    </div>
+                    <div style="height: 70px;"></div>
+                </div>
+                <div id="stage4" class="stage">
+                    <div id="op4"></div>
+                    <div style="height: 70px;"></div>
+                    <div style="text-align: center;">
+                        <span class="buttontext"> You have </span>
+                        <span id="mo"
+                            style="color: #eec; font-size: 30px;">{{formatNumber(Player.stage1.spacefoam)}}</span>
+                        <span class="buttontext"> Molecules. </span><br>
+                        <span style="font-size: 15px;">( </span>
+                        <span id="mops"
+                            style="color: #eec; font-size: 15px;">{{formatNumber(Player.stage1.spacefoam)}}</span>
+                        <span style="font-size: 15px;"> per second)</span><br>
+                        <span id="deffect4" style="color: #ffaaaa; font-size: 12px;"></span>
+                    </div>
+                    <div style="height: 40px;"></div>
+                    <div style="height: 100px; display: flex; flex-direction: row; justify-content: center; align-items: center;">
+                        <img src="./pic/multiplier.ico" alt="multiplier">
+                        <div style="width: 15px;"></div>
+                        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                            <div>Multiplier</div>
+                            <div style="height: 7px;"></div>
+                            <div id="s4mult">2x</div>
+                        </div>
+                        <div style="width: 30px;"></div>
+                        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                            <button id="s4buy" class="fixedpurchasebutton-nafford" onclick="BuyMult()">Buy | 1 Molecules</button>
+                            <div style="height: 7px;"></div>
+                            <button id="s4auto" class="fixedpurchasebutton-nauto" onclick="s4SwapAuto()">Auto OFF</button>
+                        </div>
+                    </div>
+                    <div style="height: 20px;"></div>
+                    <div style="height: 70px; display: flex; flex-direction: row; justify-content: center; align-items: center;">
+                        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                            <button id="s4store" class="fixedpurchasebutton-nafford" onclick="StoreMult()">Reset and store multipliers</button>
+                        </div>
+                        <div style="width: 30px;"></div>
+                        <img src="./pic/stored_multiplier.ico" alt="multiplier">
+                        <div style="width: 15px;"></div>
+                        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                            <div>Stored Mult.</div>
+                            <div style="height: 7px;"></div>
+                            <div id="s4storedmult">2x</div>
+                        </div>
+                    </div>
+                    <div style="height: 40px;"></div>
+                    <template>
+                        <table class="image-table">
+                            <tbody>
+                                <tr v-for="row in s4rows" :key="row"
+                                    style="display: flex; flex-direction: row; justify-content: center;">
+                                    <td v-for="(image, index) in s4images.slice((row - 1) * 8, row * 8)" :key="index">
+                                        <div class="image-container">
+                                            <img :src="image" :alt="'Image ' + (index + 1 + (row - 1) * 8)"
+                                                class="grid-image" @mouseenter="hovers4upgrades(index+(row-1)*8)"
+                                                @click="purchases4upgrades(index+(row-1)*8)" />
+                                            <div class="mask" :id="gets4Mask(index+row*8-8)"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </template>
+                    <div style="height: 10px;"></div>
+                    <button class="purchasebutton-nafford" onclick="s4BuyMaxUpgrades()">Buy Max Upgrades</button>
+                    <div style="height: 10px;"></div>
+                    <div style="display: flex; flex-direction: column; align-items: center; height: 70px;">
+                        <div id="s4upgradename"></div>
+                        <div id="s4upgradecost"></div>
+                        <div id="s4upgradedesc" style="text-align: center;"></div>
+                        <div id="s4upgradeeff"></div>
                     </div>
                     <div style="height: 70px;"></div>
                 </div>

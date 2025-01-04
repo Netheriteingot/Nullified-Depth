@@ -35,7 +35,7 @@ function StageUnlocked(stage) {
 }
 
 function DoOnRead(){
-    if(Player.version==1 && Player.depth == 1)Player.stage4 = deepCopy(startPlayer.stage4);
+    if(Player.version==1 && Player.depth == 1){Player.stage4 = deepCopy(startPlayer.stage4);Player.version=2;}
 }
 
 /* --- Notation --- */

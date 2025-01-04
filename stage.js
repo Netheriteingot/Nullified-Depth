@@ -239,20 +239,20 @@ const s4images = new Array(
     "./pic/s4upgrade16.jpg"
 )
 const prupgradeEffect = new Array(
-    "x1.6 gain on everything, ignoring any in-stage softcaps.",
-    "x1.3 all structures' production in Space and x1.5 Space Foams Gain.",
-    "x1.8 Planck Time Gain.",
-    "x2.1 Relative Mass Gain. (This boost is less affected by softcaps.)",
-    "x1.3 all structures' production in Space and x1.8 Space Foams Gain.",
-    "x2 Planck Time Gain.",
-    "x2.2 Relative Mass Gain. (This boost is less affected by softcaps.)",
+    "x2 gain on everything, ignoring any in-stage softcaps.",
+    "x1.5 all structures' production in Space and x1.8 Space Foams Gain.",
+    "x2.3 Planck Time Gain.",
+    "x2.4 Relative Mass Gain. (This boost is less affected by softcaps.)",
+    "x1.5 all structures' production in Space and x2.3 Space Foams Gain.",
+    "x2.3 Planck Time Gain.",
+    "x2.4 Relative Mass Gain. (This boost is less affected by softcaps.)",
     "Get 1% of Time Extensions on prestige every real second.",
     "Gain 2 extra base Universes every reset.",
     "Gain 2 extra base Universes every reset.",
     "Gain 2 extra base Universes every reset.",
     "x2 Universes Gain.",
     "x2 Universes Gain.",
-    "x1.6 gain on everything, ignoring any in-stage softcaps.",
+    "x2 gain on everything, ignoring any in-stage softcaps.",
     "Stage unlock upgrades are marginally cheaper.",
     "Prestige Upgrade 1x8 is 3 times faster."
 );
@@ -276,11 +276,11 @@ const primages = new Array(
 )
 const pr2upgradeEffect = new Array(
     "You have enough particles to make some molecules. Unlock a new stage.",
-    "x1.6 gain on everything, ignoring any in-stage softcaps.",
-    "x2 Space Foam Gain.",
-    "x1.5 Planck Time Gain.",
-    "x1.8 Relative Mass Gain.",
-    "x2 Molecules Gain.",
+    "x2 gain on everything, ignoring any in-stage softcaps.",
+    "x3 Space Foam Gain.",
+    "x2.3 Planck Time Gain.",
+    "x2.7 Relative Mass Gain.",
+    "x3 Molecules Gain.",
     "x2 Universe Gain.",
     "x2 Universe Gain.",
     "Unlock automation for Multipliers in Chemical stage.",
@@ -419,14 +419,14 @@ function s1prod(idx) {
     if (Player.stage1.upgrades[0]) prod[0] *= 3;
     if (Player.stage1.upgrades[1]) prod[0] *= 3;
     if (Player.stage1.upgrades[2]) prod[0] *= 3;
-    if(Player.prestige.upgrades[0])prod[0] *= 1.6;
-    if(Player.prestige.upgrades[13])prod[0] *= 1.6;
-    if(Player.prestige.upgrades[1])prod[0] *= 1.5;
-    if(Player.prestige.upgrades[1])for(var i=0;i<5;i++)prod[i]*=1.3;
-    if(Player.prestige.upgrades[4])prod[0] *= 1.8;
-    if(Player.prestige.upgrades[4])for(var i=0;i<5;i++)prod[i]*=1.3;
-    if(Player.prestige.upgrades2[1])prod[0] *= 1.6;
-    if(Player.prestige.upgrades2[2])prod[0] *= 2;
+    if(Player.prestige.upgrades[0])prod[0] *= 2;
+    if(Player.prestige.upgrades[13])prod[0] *= 2;
+    if(Player.prestige.upgrades[1])prod[0] *= 1.8;
+    if(Player.prestige.upgrades[1])for(var i=0;i<5;i++)prod[i]*=1.5;
+    if(Player.prestige.upgrades[4])prod[0] *= 2.3;
+    if(Player.prestige.upgrades[4])for(var i=0;i<5;i++)prod[i]*=1.5;
+    if(Player.prestige.upgrades2[1])prod[0] *= 2;
+    if(Player.prestige.upgrades2[2])prod[0] *= 3;
     if (Player.stage1.upgrades[4]) prod[0] *= Math.pow(1.02, Player.stage1.buildingsbought[0]);
     if (Player.stage1.upgrades[5]) prod[1] *= 3;
     if (Player.stage1.upgrades[6]) prod[1] *= 3;
@@ -658,12 +658,12 @@ function tps(){
     prod*=Math.pow(1.45+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[19]);
     prod*=Math.pow(1.075,Player.stage2.upgrades[14]);
     prod*=Math.pow(5,Player.stage2.upgrades[23]);
-    if(Player.prestige.upgrades[0])prod*=1.6;
-    if(Player.prestige.upgrades[13])prod*=1.6;
-    if(Player.prestige.upgrades[2])prod*=1.8;
-    if(Player.prestige.upgrades[5])prod*=2;
-    if(Player.prestige.upgrades2[1])prod *= 1.6;
-    if(Player.prestige.upgrades2[3])prod *= 1.5;
+    if(Player.prestige.upgrades[0])prod*=2;
+    if(Player.prestige.upgrades[13])prod*=2;
+    if(Player.prestige.upgrades[2])prod*=2.3;
+    if(Player.prestige.upgrades[5])prod*=2.3;
+    if(Player.prestige.upgrades2[1])prod *= 2;
+    if(Player.prestige.upgrades2[3])prod *= 2.2;
     prod*=Math.pow(Player.stage2.tsitex+1,0.18*Player.stage2.upgrades[4]+0.1*Player.stage2.upgrades[12]+0.1*Player.stage2.upgrades[20]);
     if(Player.stage4.upgrades[4]) prod *= 1.3;
     if(Player.stage4.upgrades[5]) prod *= 1.3;
@@ -852,16 +852,16 @@ function s3prod(){
     prod*=(Math.pow(3,Player.stage3.buildings[3]));
     if(prod>1)prod=Math.pow(prod,0.5);
     if(prod>1e4)prod=100*Math.pow(prod,0.5);
-    if(Player.prestige.upgrades[3])prod*=2.1;
-    if(Player.prestige.upgrades[6])prod*=2.2;
-    if(Player.prestige.upgrades2[1])prod *= 1.6;
-    if(Player.prestige.upgrades2[4])prod *= 1.8;
+    if(Player.prestige.upgrades[3])prod*=2.4;
+    if(Player.prestige.upgrades[6])prod*=2.4;
+    if(Player.prestige.upgrades2[1])prod *= 2;
+    if(Player.prestige.upgrades2[4])prod *= 2.7;
     if(prod>1e8){
         if(Player.stage3.upgrades[14])prod=10*Math.pow(prod,0.875);
         else prod=100*Math.pow(prod,0.75);
     }
-    if(Player.prestige.upgrades[0])prod*=1.6;
-    if(Player.prestige.upgrades[13])prod*=1.6;
+    if(Player.prestige.upgrades[0])prod*=2;
+    if(Player.prestige.upgrades[13])prod*=2;
     if(Player.stage3.upgrades[13])prod*=Math.pow(1.4,Math.max(Player.stage3.buildingsbought[2]-20,0));
     if(Player.stage4.upgrades[4]) prod *= 1.3;
     if(Player.stage4.upgrades[5]) prod *= 1.3;
@@ -984,8 +984,8 @@ function s4prod(){
     if(Player.stage4.upgrades[13]) prod *= 1.3;
     if(Player.stage4.upgrades[14]) prod *= 1.3;
     if(Player.stage4.upgrades[15]) prod *= 1.3;
-    if(Player.prestige.upgrades2[1])prod *= 1.6;
-    if(Player.prestige.upgrades2[5])prod *= 2;
+    if(Player.prestige.upgrades2[1])prod *= 2;
+    if(Player.prestige.upgrades2[5])prod *= 3;
     prod *= Math.pow(2,Player.stage4.mult);
     prod *= Math.pow(1.6,Player.stage4.stored_mult);
     return prod;

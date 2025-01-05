@@ -36,6 +36,8 @@ body {
     height: 100%;
     width: 100%;
     z-index: 9;
+    overflow-y: scroll;
+    pointer-events: auto;
 }
 
 .header {
@@ -508,7 +510,6 @@ body {
     align-items: center;
     z-index: 10;
     height: 100%;
-    overflow-y: scroll;
 }
 
 .row {

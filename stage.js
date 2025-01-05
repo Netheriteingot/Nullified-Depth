@@ -1038,16 +1038,16 @@ function UniGain(){
 
 function Prestige(){
     if(!AbleToUni())return;
+    Player.prestige.fastestrate = Math.max(Player.prestige.fastestrate, UniGain()/Player.prestige.timespent);
+    Player.prestige.uni += UniGain();
+    Player.prestige.timespent = 0;
+    Player.prestige.uniresetcount += 1;
     let auto = Player.stage1.auto;
     Player.stage1 = deepCopy(startPlayer.stage1);
     Player.stage2 = deepCopy(startPlayer.stage2);
     Player.stage3 = deepCopy(startPlayer.stage3);
     Player.stage4 = deepCopy(startPlayer.stage4);
     for(var i=0;i<auto.length;i++)Player.stage1.auto[i] = auto[i];
-    Player.prestige.fastestrate = Math.max(Player.prestige.fastestrate, UniGain()/Player.prestige.timespent);
-    Player.prestige.uni += UniGain();
-    Player.prestige.timespent = 0;
-    Player.prestige.uniresetcount += 1;
     UpdateButtons();
 }
 function getprMask(idx) { return "prmask" + idx; }

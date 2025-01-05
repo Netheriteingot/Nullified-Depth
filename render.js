@@ -56,9 +56,9 @@ var NextDepthEffect = [
 function DepthEffect(dp, st){
     if(dp==1)return ""
     if(dp==2){
-        if(st==1)return "This stage production is nerfed to /5 ^0.9";
-        if(st==2)return "This stage production is nerfed to /2 ^0.9 <br> Your Planck Time multiplies Space Foams' gain by "+(formatNumber(Math.pow(1+Player.stage2.plancktime, 0.125)))+"x";
-        if(st==3)return "This stage production is nerfed to /5 ^0.9 <br> Your Mass multiplies Planck Time's gain by "+(formatNumber(Math.pow(1+1e9*Player.stage3.mt, 0.15)))+"x";
+        if(st==1)return "This stage production is nerfed to /12.5 ^0.9";
+        if(st==2)return "This stage production is nerfed to /5 ^0.9 <br> Your Planck Time multiplies Space Foams' gain by "+(formatNumber(Math.pow(1+Player.stage2.plancktime, 0.125)))+"x";
+        if(st==3)return "This stage production is nerfed to /12.5 ^0.9 <br> Your Mass multiplies Planck Time's gain by "+(formatNumber(Math.pow(1+1e9*Player.stage3.mt, 0.15)))+"x";
         if(st==4){
             if(Player.stage4.upgrades[8]) return "Your Molecules multiplies Mass gain by "+(formatNumber(Math.pow(Player.stage4.mo+1, 0.25)))+"x";
             else return "";

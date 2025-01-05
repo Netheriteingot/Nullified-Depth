@@ -448,7 +448,7 @@ function s1prod(idx) {
     if(Player.stage4.upgrades[15]) prod[0] *= 1.3;
     if(Player.depth >= 2)prod[0] *= Math.pow(1+Player.stage2.plancktime, 0.125);
     if(Player.depth >= 2)prod[0] = Math.pow(prod[0], 0.9);
-    if(Player.depth >= 2)prod[0] *= 0.2;
+    if(Player.depth >= 2)prod[0] *= 0.08;
     return prod[idx];
 }
 function s1DoEveryCycle() {
@@ -675,7 +675,7 @@ function tps(){
     if(Player.stage4.upgrades[15]) prod *= 1.3;
     if(Player.depth >= 2)prod *= Math.pow(1+1e9*Player.stage3.mt, 0.15);
     if(Player.depth >= 2)prod = Math.pow(prod, 0.9);
-    if(Player.depth >= 2)prod *= 0.5;
+    if(Player.depth >= 2)prod *= 0.2;
     return prod;
 }
 
@@ -873,7 +873,7 @@ function s3prod(){
     if(Player.stage4.upgrades[15]) prod *= 1.3;
     if(Player.stage4.upgrades[8])prod*=Math.pow(Player.stage4.mo+1, 0.25);
     if(Player.depth >= 2)prod = 1e-9*Math.pow(prod*1e9, 0.9);
-    if(Player.depth >= 2)prod *= 0.2;
+    if(Player.depth >= 2)prod *= 0.08;
     return prod;
 }
 

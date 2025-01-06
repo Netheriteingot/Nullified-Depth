@@ -632,7 +632,7 @@ function s2Prestige(){
         Player.stage2.tex=calcs2PrestigeGain();
         Player.stage2.plancktime=0;
         var tmp=(Player.stage2.upgrades[22]);
-        Player.stage2.upgrades=startPlayer.stage2.upgrades;
+        for(var i=0;i<23;i++)Player.stage2.upgrades[i]=0;
         Player.stage2.upgrades[22]=tmp;
         Player.stage2.tsitex=0;
     }

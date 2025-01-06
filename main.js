@@ -32,6 +32,7 @@ function StageUnlocked(stage) {
 
 function DoOnRead(){
     if(Player.stage3.mt<1e-9)Player.stage3.mt=1e-9;
+    if(Player.stage1.spacefoam<10)Player.stage1.spacefoam=10;
     if(Player.version==1 && Player.depth == 1){Player.stage4 = deepCopy(startPlayer.stage4);Player.version=2;}
 }
 

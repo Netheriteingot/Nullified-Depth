@@ -47,6 +47,11 @@ function formatNumber(num) {
     } else if (num < 1e4 && num >= 1e-3) {
         if(num==Math.floor(num))return Math.floor(num).toString(); // Integer
         // Format with 4 significant digits for numbers < 1e5 and >= 1e-5
+        if(num >= 1e3) return num.toFixed(0);
+        if(num >= 1e2) return num.toFixed(1);
+        if(num >= 10) return num.toFixed(2);
+        if(num >= 1) return num.toFixed(3);
+        return num.toFixed(4);
         var str = Number(num.toPrecision(4)).toString();
         if (!str.includes('.') && str.length < 4){
             str += '.';

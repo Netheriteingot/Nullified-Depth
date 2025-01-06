@@ -1021,7 +1021,7 @@ function resetPlayer(){
     Player.stage2.tex=0;
     Player.stage2.tsitex=0;
     for(var i=0;i<24;i++)Player.stage2.upgrades[i]=0;
-    Player.stage3.mt=0;
+    Player.stage3.mt=1e-9;
     for(var i=0;i<4;i++)Player.stage3.buildings[i]=0;
     for(var i=0;i<4;i++)Player.stage3.buildingsbought[i]=0;
     for(var i=0;i<16;i++)Player.stage3.upgrades[i]=0;

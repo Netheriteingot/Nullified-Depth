@@ -565,10 +565,10 @@ function purchases2upgrades(idx) {
 }
 function gets2UpgradeEffect(idx) {
     if (idx == -1) return "Hover over an upgrade to see its effect!";
-    if(idx==0)return (Math.pow(1.5+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[idx]).toFixed(2))+"x";
-    if(idx==1)return (Math.pow(1.5+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[idx]).toFixed(2))+"x";
-    if(idx==2)return (Math.pow(1.5+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[idx]).toFixed(2))+"x";
-    if(idx==3)return (Math.pow(1.5+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[idx]).toFixed(2))+"x";
+    if(idx==0)return (Math.pow(1.55+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[idx]).toFixed(2))+"x";
+    if(idx==1)return (Math.pow(1.55+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[idx]).toFixed(2))+"x";
+    if(idx==2)return (Math.pow(1.55+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[idx]).toFixed(2))+"x";
+    if(idx==3)return (Math.pow(1.55+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[idx]).toFixed(2))+"x";
     if(idx==4)return formatNumber(Math.pow(Player.stage2.tsitex+1,0.18*Player.stage2.upgrades[idx]))+"x";
     if(idx==5)return "1.5x";
     if(idx==6)return "^"+(1+0.125*Player.stage2.upgrades[idx]);
@@ -581,10 +581,10 @@ function gets2UpgradeEffect(idx) {
     if(idx==13)return "1.2x";
     if(idx==14)return (Math.pow(1.075,Player.stage2.upgrades[idx]).toFixed(2))+"x";
     if(idx==15)return "+"+(0.03*Player.stage2.upgrades[idx]);
-    if(idx==16)return (Math.pow(1.5+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[idx]).toFixed(2))+"x";
-    if(idx==17)return (Math.pow(1.5+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[idx]).toFixed(2))+"x";
-    if(idx==18)return (Math.pow(1.5+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[idx]).toFixed(2))+"x";
-    if(idx==19)return (Math.pow(1.5+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[idx]).toFixed(2))+"x";
+    if(idx==16)return (Math.pow(1.45+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[idx]).toFixed(2))+"x";
+    if(idx==17)return (Math.pow(1.45+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[idx]).toFixed(2))+"x";
+    if(idx==18)return (Math.pow(1.45+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[idx]).toFixed(2))+"x";
+    if(idx==19)return (Math.pow(1.45+0.03*Player.stage2.upgrades[15],Player.stage2.upgrades[idx]).toFixed(2))+"x";
     if(idx==20)return formatNumber(Math.pow(Player.stage2.tsitex+1,0.1*Player.stage2.upgrades[idx]))+"x";
     if(idx==21)return "2x";
     if (idx == 22) return (Player.stage1.upgrades[idx] ? "UNLOCKED" : "NOT YET UNLOCKED");
@@ -1010,6 +1010,26 @@ setInterval(function () {
 /* --- Prestige --- */
 
 
+function resetPlayer(){
+    for(var i=0;i<5;i++)Player.stage1.buildings[i]=0;
+    for(var i=0;i<5;i++)Player.stage1.buildingsunlocked[i]=0;
+    Player.stage1.buildingsunlocked[0]=1;
+    for(var i=0;i<5;i++)Player.stage1.buildingsbought[i]=0;
+    for(var i=0;i<20;i++)Player.stage1.upgrades[i]=0;
+    Player.stage1.spacefoam=0;
+    Player.stage2.plancktime=0;
+    Player.stage2.tex=0;
+    Player.stage2.tsitex=0;
+    for(var i=0;i<24;i++)Player.stage2.upgrades[i]=0;
+    Player.stage3.mt=0;
+    for(var i=0;i<4;i++)Player.stage3.buildings[i]=0;
+    for(var i=0;i<4;i++)Player.stage3.buildingsbought[i]=0;
+    for(var i=0;i<16;i++)Player.stage3.upgrades[i]=0;
+    for(var i=0;i<16;i++)Player.stage4.upgrades[i]=0;
+    Player.stage4.mo=0;
+    Player.stage4.mult=0;
+    Player.stage4.stored_mult=0;
+}
 function UniReq(){
     if(Player.depth == 2) return 6.02e32;
     else return 6.02e26;
@@ -1042,12 +1062,7 @@ function Prestige(){
     Player.prestige.uni += UniGain();
     Player.prestige.timespent = 0;
     Player.prestige.uniresetcount += 1;
-    let auto = Player.stage1.auto;
-    Player.stage1 = deepCopy(startPlayer.stage1);
-    Player.stage2 = deepCopy(startPlayer.stage2);
-    Player.stage3 = deepCopy(startPlayer.stage3);
-    Player.stage4 = deepCopy(startPlayer.stage4);
-    for(var i=0;i<auto.length;i++)Player.stage1.auto[i] = auto[i];
+    resetPlayer();
     UpdateButtons();
 }
 function getprMask(idx) { return "prmask" + idx; }

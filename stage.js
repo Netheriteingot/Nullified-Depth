@@ -1016,7 +1016,7 @@ function resetPlayer(){
     Player.stage1.buildingsunlocked[0]=1;
     for(var i=0;i<5;i++)Player.stage1.buildingsbought[i]=0;
     for(var i=0;i<20;i++)Player.stage1.upgrades[i]=0;
-    Player.stage1.spacefoam=0;
+    Player.stage1.spacefoam=10;
     Player.stage2.plancktime=0;
     Player.stage2.tex=0;
     Player.stage2.tsitex=0;

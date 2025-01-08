@@ -62,8 +62,8 @@ const Player_para = {
         upgrade_cost: [0,100,6e3,2e5,1e2,1e5,1e8,1e11,1e6,2e9,1e11,1e20,1e14,1e17,1e20,1e23]
     },
     prestige: {
-        upgrade_cost: [1,2,2,2,3,3,3,17,2,16,96,10,40,15,128,71],
-        upgrade_cost2: [1,2e2,1e2,1e2,1e2,1e2,8e2,3.2e3,2e3,3e2,6e2,1.2e3,2.4e3,1e3,2e3,4e3,8e3,1e100,1e100,1e100,1e100,1e100,1e100,1e4,5e4]
+        upgrade_cost: [1,2,2,2,3,3,3,17,2,16,48,10,40,15,64,37],
+        upgrade_cost2: [1,2e2,1e2,1e2,1e2,1e2,8e2,3.2e3,3e2,6e2,1.2e3,2.4e3,1e3,2e3,4e3,8e3,8e2,1.2e3,1.6e3,1.6e3,3.2e3,1e100,1e4,3e4]
     }
 };
 const s1upgradeName = new Array("I", "II", "III", "1st Dimension", "Spacial Combination", "IV", "V", "2nd Dimension", "Spacial Rearrangement", "VI", "3rd Dimension", "4th Dimension", "Euler's Theorem", "Fractals", "Spacial Concatenation", "Timelapse", "Auto 1", "Auto 2", "Auto 3", "Auto 4");
@@ -201,7 +201,7 @@ const s3images = new Array(
     "./pic/s3upgrade15.jpg",
     "./pic/s3upgrade16.jpg"
 )
-const s4upgradeName = new Array("Synthesis","Molecular instability","Reaction Space","Self-catalyst","Reactivity I","Reactivity II","Reactivity III","Reactivity IV","Electrolysis","Nice.","High-energy environments","Beta+ Reaction","Electron Capture","Neutron Cluster","Stable molecules","New Stage");
+const s4upgradeName = new Array("Synthesis","Molecular Instability","Reaction Space","Self-catalyst","Reactivity I","Reactivity II","Reactivity III","Reactivity IV","Electrolysis","Molecular Instability II","Reactivity II","Self-catalyst II","Reactivity V","Reactivity VI","Reactivity VII","Reactivity VIII");
 const s4upgradeEffect = new Array(
     "Gain Molecules based on your current Mass.",
     "Gain more Molecules based on your current Planck Time. (only takes effect after 1e60 Planck Time)",
@@ -239,7 +239,7 @@ const s4images = new Array(
     "./pic/s4upgrade16.jpg"
 )
 const prupgradeEffect = new Array(
-    "x2 gain on everything, ignoring any in-stage softcaps.",
+    "x2 gain on first 3 stages, ignoring any in-stage softcaps.",
     "x1.5 all structures' production in Space and x1.8 Space Foams Gain.",
     "x2.3 Planck Time Gain.",
     "x2.4 Relative Mass Gain. (This boost is less affected by softcaps.)",
@@ -252,7 +252,7 @@ const prupgradeEffect = new Array(
     "Gain 2 extra base Universes every reset.",
     "x2 Universes Gain.",
     "x2 Universes Gain.",
-    "x2 gain on everything, ignoring any in-stage softcaps.",
+    "x2 gain on first 3 stages, ignoring any in-stage softcaps.",
     "Stage unlock upgrades are marginally cheaper.",
     "Prestige Upgrade 1x8 is 3 times faster."
 );
@@ -276,7 +276,7 @@ const primages = new Array(
 )
 const pr2upgradeEffect = new Array(
     "You have enough particles to make some molecules. Unlock a new stage.",
-    "x2 gain on everything, ignoring any in-stage softcaps.",
+    "x2 gain on first 4 stages, ignoring any in-stage softcaps.",
     "x3 Space Foam Gain.",
     "x2.3 Planck Time Gain.",
     "x2.7 Relative Mass Gain.",
@@ -291,11 +291,11 @@ const pr2upgradeEffect = new Array(
     "Add 0.05 to base Universe gain per OoM of Planck Time.",
     "Add 0.15 to base Universe gain per OoM of Relative Mass.",
     "Add 0.4 to base Universe gain per OoM of Molecules.",
-    "null",
-    "null",
-    "null",
-    "null",
-    "null",
+    "x2 gain on first 4 stages, ignoring any in-stage softcaps.",
+    "x3 gain on first 4 stages, ignoring any in-stage softcaps.",
+    "x3 gain on all structures in Space stage.",
+    "You get x1.5 Time Extensions in Time stage.",
+    "Multipliers affect Mass gain at a reduced rate, less affected by stage 3 softcap.",
     "null",
     "Stored Multipliers multiply Universe gain at a reduced rate. (x1.1 per Stored Mult.)",
     "Passively produce universes at 25% of your fastest rate."
@@ -426,7 +426,10 @@ function s1prod(idx) {
     if(Player.prestige.upgrades[4])prod[0] *= 2.3;
     if(Player.prestige.upgrades[4])for(var i=0;i<5;i++)prod[i]*=1.5;
     if(Player.prestige.upgrades2[1])prod[0] *= 2;
+    if(Player.prestige.upgrades2[16])prod[0] *= 2;
+    if(Player.prestige.upgrades2[17])prod[0] *= 3;
     if(Player.prestige.upgrades2[2])prod[0] *= 3;
+    if(Player.prestige.upgrades2[18])for(var i=0;i<5;i++)prod[i]*=3;
     if (Player.stage1.upgrades[4]) prod[0] *= Math.pow(1.02, Player.stage1.buildingsbought[0]);
     if (Player.stage1.upgrades[5]) prod[1] *= 3;
     if (Player.stage1.upgrades[6]) prod[1] *= 3;
@@ -447,7 +450,8 @@ function s1prod(idx) {
     if(Player.stage4.upgrades[14]) prod[0] *= 1.3;
     if(Player.stage4.upgrades[15]) prod[0] *= 1.3;
     if(Player.depth >= 2)prod[0] *= Math.pow(1+Player.stage2.plancktime, 0.125);
-    if(Player.depth >= 2)prod[0] = Math.pow(prod[0], 0.9);
+    if(Player.depth == 2)prod[0] = Math.pow(prod[0], 0.9);
+    else if(Player.depth >= 3) prod[0] = Math.pow(prod[0], 0.75);
     if(Player.depth >= 2)prod[0] *= 0.08;
     return prod[idx];
 }
@@ -620,6 +624,7 @@ function calcs2PrestigeGain(){
     if(Player.stage2.upgrades[5])tmp*=1.5;
     if(Player.stage2.upgrades[13])tmp*=1.2;
     if(Player.stage2.upgrades[21])tmp*=2;
+    if(Player.prestige.upgrades2[19])tmp*=1.5;
     if(Player.stage2.upgrades[7]){
         if(tmp<1)tmp=Math.pow(tmp,0.7);
         else tmp=Math.pow(tmp,1.35);
@@ -663,6 +668,8 @@ function tps(){
     if(Player.prestige.upgrades[2])prod*=2.3;
     if(Player.prestige.upgrades[5])prod*=2.3;
     if(Player.prestige.upgrades2[1])prod *= 2;
+    if(Player.prestige.upgrades2[16])prod *= 2;
+    if(Player.prestige.upgrades2[17])prod *= 3;
     if(Player.prestige.upgrades2[3])prod *= 2.2;
     prod*=Math.pow(Player.stage2.tsitex+1,0.18*Player.stage2.upgrades[4]+0.1*Player.stage2.upgrades[12]+0.1*Player.stage2.upgrades[20]);
     if(Player.stage4.upgrades[4]) prod *= 1.3;
@@ -674,8 +681,11 @@ function tps(){
     if(Player.stage4.upgrades[14]) prod *= 1.3;
     if(Player.stage4.upgrades[15]) prod *= 1.3;
     if(Player.depth >= 2)prod *= Math.pow(1+1e9*Player.stage3.mt, 0.15);
-    if(Player.depth >= 2)prod = Math.pow(prod, 0.9);
+    if(Player.depth >= 3)prod *= Math.pow(1+Player.stage1.spacefoam/1e20,0.15);
+    if(Player.depth == 2)prod = Math.pow(prod, 0.9);
+    else if(Player.depth >= 3)prod = Math.pow(prod, 0.825);
     if(Player.depth >= 2)prod *= 0.2;
+    if(Player.depth >= 3)prod *= 0.25;
     return prod;
 }
 
@@ -855,6 +865,8 @@ function s3prod(){
     if(Player.prestige.upgrades[3])prod*=2.4;
     if(Player.prestige.upgrades[6])prod*=2.4;
     if(Player.prestige.upgrades2[1])prod *= 2;
+    if(Player.prestige.upgrades2[16])prod *= 2;
+    if(Player.prestige.upgrades2[17])prod *= 3;
     if(Player.prestige.upgrades2[4])prod *= 2.7;
     if(prod>1e8){
         if(Player.stage3.upgrades[14])prod=10*Math.pow(prod,0.875);
@@ -871,9 +883,13 @@ function s3prod(){
     if(Player.stage4.upgrades[13]) prod *= 1.3;
     if(Player.stage4.upgrades[14]) prod *= 1.3;
     if(Player.stage4.upgrades[15]) prod *= 1.3;
-    if(Player.stage4.upgrades[8])prod*=Math.pow(Player.stage4.mo+1, 0.25);
-    if(Player.depth >= 2)prod = 1e-9*Math.pow(prod*1e9, 0.9);
+    if(Player.prestige.upgrades2[20]) prod *= Math.pow(1.1, Player.stage4.mult);
+    if(Player.stage4.upgrades[8])prod*=Math.pow(Player.stage4.mo+1, 0.25+0.05*(Player.depth >= 3));
+    if(Player.depth >= 3)prod*=Math.pow(1+Player.stage2.plancktime/1e20, 0.15);
+    if(Player.depth == 2)prod = 1e-9*Math.pow(prod*1e9, 0.9);
+    else if(Player.depth >= 3)prod = 1e-9*Math.pow(prod*1e9, 0.75);
     if(Player.depth >= 2)prod *= 0.08;
+    if(Player.depth >= 3)prod *= 0.05;
     return prod;
 }
 
@@ -985,9 +1001,14 @@ function s4prod(){
     if(Player.stage4.upgrades[14]) prod *= 1.3;
     if(Player.stage4.upgrades[15]) prod *= 1.3;
     if(Player.prestige.upgrades2[1])prod *= 2;
+    if(Player.prestige.upgrades2[16])prod *= 2;
+    if(Player.prestige.upgrades2[17])prod *= 3;
     if(Player.prestige.upgrades2[5])prod *= 3;
     prod *= Math.pow(2,Player.stage4.mult);
     prod *= Math.pow(1.6,Player.stage4.stored_mult);
+    if(Player.depth >= 3)prod *= Math.pow(1+Player.stage3.mt/1e10, 0.2);
+    if(Player.depth >= 3)prod = Math.pow(prod, 0.85);
+    if(Player.depth >= 3)prod *= 0.2;
     return prod;
 }
 
@@ -1031,6 +1052,7 @@ function resetPlayer(){
     Player.stage4.stored_mult=0;
 }
 function UniReq(){
+    if(Player.depth == 3) return 6.02e32;
     if(Player.depth == 2) return 6.02e32;
     else return 6.02e26;
 }
@@ -1053,6 +1075,7 @@ function UniGain(){
     if(Player.prestige.upgrades2[7]) gain *= 2;
     if(Player.prestige.upgrades2[22]) gain *= Math.pow(1.1, Player.stage4.stored_mult);
     if(Player.depth >= 2) gain *= 10;
+    if(Player.depth >= 3) gain *= 5;
     return gain;
 }
 

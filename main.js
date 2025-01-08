@@ -8,6 +8,11 @@ function DepthGoDownReq(){
         for (var i = 0; i < Player.prestige.upgrades.length; i++)flag *= Player.prestige.upgrades[i];
         if (flag == 1) return true;
     }
+    if (Player.depth == 2){
+        let flag = 1;
+        for (var i = 0; i < 8; i++)flag *= Player.prestige.upgrades2[i];
+        if (flag == 1) return true;
+    }
     return false;
 }
 function DepthGoDown() {
@@ -15,18 +20,23 @@ function DepthGoDown() {
         Player.depth += 1;
         //Prestige();
         resetPlayer();
-        Player.prestige.uni = 1;
+        if(Player.depth == 2)Player.prestige.uni = 1;
         Player.prestige.uniresetcount = 0;
         UpdateButtons();
     }
 }
 
 function StageUnlocked(stage) {
-    if(stage==0)return Player.stage3.upgrades[15] || Player.prestige.uniresetcount > 0; //to be changed
+    if(stage==0)return Player.stage3.upgrades[15] || Player.prestige.uniresetcount > 0 || Player.depth >= 3; //to be changed
     if(stage==1)return true;
     if(stage==2)return Player.stage1.upgrades[15];
     if(stage==3)return Player.stage2.upgrades[22];
-    if(stage==4)return Player.depth >= 2 && (Player.stage3.upgrades[15] && Player.prestige.upgrades2[0]) || Player.prestige.uniresetcount > 0;
+    if(stage==4){
+        if(Player.depth <= 1)return false;
+        if(!Player.prestige.upgrades2[0])return false;
+        if(Player.stage3.upgrades[15] || Player.prestige.uniresetcount > 0)return true;
+        return false;
+    }
     return false;
 }
 

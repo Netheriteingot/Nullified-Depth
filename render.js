@@ -1,5 +1,10 @@
 var UpdateLog = [
     [
+        "Beta 0.4",
+        "Depth 3.",
+        "Rebalanced early game, making it faster."
+    ],
+    [
         "Beta 0.3.1",
         "More depth 2 content.",
         "Bug fixes, sorry for the inconvenience",
@@ -34,24 +39,42 @@ var UpdateLog = [
 var CurrentDepthEffect = [
     "",
     " None ",
-    ` - Unlocks a new stage <br>
-                            - 10x Universes gain <br>
-                            - Unlocks 3 new rows of Prestige upgrades <br>
-                            <span style="color: #ffaaaa;"> - Nerfs to production (see each stage for effect)</span><br>
-                            <span style="color: #ffaaaa;"> - Universe reset requirement x1e6 </span><br>
-                            - Upgrades that unlock other stages are cheaper <br>
-                            - All currency except Space foams gain a new effect `
+    ` - 10x Universes gain <br>
+      - Unlocks 3 new rows of Prestige upgrades <br>
+      <span style="color: #ffaaaa;"> - Nerfs to production (see each stage for effect)</span><br>
+      <span style="color: #ffaaaa;"> - Universe reset requirement x1e6 </span><br>
+      - Upgrades that unlock other stages are cheaper <br>
+      - All currency except Space foams gain a new effect `,
+    ` - 50x Universes gain <br>
+      - The Molecules to Space effect is slightly better <br>
+      - Unlocks 3 new rows of Prestige upgrades <br>
+      <span style="color: #ffaaaa;"> - Nerfs to production (see each stage for effect)</span><br>
+      <span style="color: #ffaaaa;"> - Universe reset requirement x1e6 </span><br>
+      - Upgrades that unlock other stages are cheaper <br>
+      - All currency gain a new effect `
 ]
 var NextDepthEffect = [
     "",
-    ` - Unlocks a new stage <br>
-                            - 10x Universes gain <br>
-                            - Unlocks 3 new rows of Prestige upgrades <br>
-                            <span style="color: #ffaaaa;"> - Nerfs to production (see each stage for effect)</span><br>
-                            <span style="color: #ffaaaa;"> - Universe reset requirement x1e6 </span><br>
-                            - Upgrades that unlock other stages are cheaper <br>
-                            - All currency except Space foams gain a new effect `,
+    ` - 10x Universes gain <br>
+      - Unlocks 3 new rows of Prestige upgrades <br>
+      <span style="color: #ffaaaa;"> - Nerfs to production (see each stage for effect)</span><br>
+      <span style="color: #ffaaaa;"> - Universe reset requirement x1e6 </span><br>
+      - Upgrades that unlock other stages are cheaper <br>
+      - All currency except Space foams gain a new effect `,
+    ` - 5x Universes gain <br>
+      - The Molecules to Space effect is slightly better <br>
+      <span style="color: #ffaaaa;"> - Nerfs to production (see each stage for effect)</span><br>
+      - All currency except Molecules gain a new effect `,
     `To Be Continued`
+]
+var DepthReq = [
+    "Buy all current upgrades to go down 1 depth.",
+    "Buy first 3 rows of upgrades to go down 1 depth. <br> (I'd recommend you to get a bit more upgrades.)",
+    "",
+    "",
+    "",
+    "",
+    "None (You have reached max Depth!)"
 ]
 function DepthEffect(dp, st){
     if(dp==1)return ""
@@ -62,6 +85,30 @@ function DepthEffect(dp, st){
         if(st==4){
             if(Player.stage4.upgrades[8]) return "Your Molecules multiplies Mass gain by "+(formatNumber(Math.pow(Player.stage4.mo+1, 0.25)))+"x";
             else return "";
+        }
+    }
+    if(dp==3){
+        if(st==1){
+            let str = "This stage production is nerfed to /12.5 ^0.75 ";
+            str += "<br> Your Space foams multiplies Planck Time's gain by "+(formatNumber(Math.pow(1+Player.stage1.spacefoam/1e20,0.15)))+"x";
+            return str;
+        }
+        if(st==2){
+            let str = "This stage production is nerfed to /20 ^0.825 ";
+            str += "<br> Your Planck Time multiplies Space Foams' gain by "+(formatNumber(Math.pow(1+Player.stage2.plancktime, 0.125)))+"x";
+            str += "<br> Your Planck Time multiplies Relative Mass's gain by "+(formatNumber(Math.pow(1+Player.stage2.plancktime/1e20, 0.15)))+"x";
+            return str;
+        }
+        if(st==3){
+            let str = "This stage production is nerfed to /250 ^0.75 ";
+            str += "<br> Your Mass multiplies Planck Time's gain by "+(formatNumber(Math.pow(1+1e9*Player.stage3.mt, 0.15)))+"x";
+            str += "<br> Your Mass multiplies Molecules' gain by "+(formatNumber(Math.pow(1+Player.stage3.mt/1e10, 0.2)))+"x";
+            return str;
+        }
+        if(st==4){
+            let str = "This stage production is nerfed to /5 ^0.85 ";
+            if(Player.stage4.upgrades[8]) str += "<br> Your Molecules multiplies Mass gain by "+(formatNumber(Math.pow(Player.stage4.mo+1, 0.25+0.05*(Player.depth >= 3))))+"x";
+            return str;
         }
     }
     return "";
@@ -108,6 +155,7 @@ function render() {
     document.getElementById("dp").innerHTML = "Depth "+Player.depth;
     document.getElementById("currentdeptheffect").innerHTML = CurrentDepthEffect[Player.depth];
     document.getElementById("nextdeptheffect").innerHTML = NextDepthEffect[Player.depth];
+    document.getElementById("DepthReq").innerHTML = DepthReq[Player.depth];
     for(const i of non_meta_stage)document.getElementById("deffect"+i).innerHTML=DepthEffect(Player.depth, i);
 
     if(Player.depth >= 2)document.getElementById("pu2").style="display: flex;";
@@ -197,6 +245,7 @@ function render() {
     document.getElementById("s4buy").innerHTML = "Buy | "+formatNumber(MultCost())+" Molecules";
     if(Player.prestige.upgrades2[8])document.getElementById("s4auto").className="fixedpurchasebutton"+(Player.stage4.auto?"-auto":"-nauto");
     else document.getElementById("s4auto").className="purchasebutton-auto-hidden";
+    document.getElementById("s4auto").innerHTML = (Player.stage4.auto?"Auto ON":"Auto OFF");
     document.getElementById("s4mult").innerHTML=""+formatNumber(Math.pow(2,Player.stage4.mult))+"x";
     document.getElementById("s4storedmult").innerHTML=""+formatNumber(Math.pow(1.6,Player.stage4.stored_mult))+"x";
     for (var i = 0; i < s4upgradeName.length; i++) {

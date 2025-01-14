@@ -478,6 +478,9 @@ function s1prod(idx) {
     if(Player.prestige.upgrades2[17])prod[0] = Math.pow(prod[0],1.05);
     if(Player.meta.filled_resource[4]>=9.99e49)prod[0]=Math.pow(prod[0],1.01);
     for(var i=0;i<5;i++)prod[i]*=GlobalSpeed();
+
+    if(Player.stage1.spacefoam<10)prod[0]=1;
+
     return prod[idx];
 }
 function s1DoEveryCycle() {

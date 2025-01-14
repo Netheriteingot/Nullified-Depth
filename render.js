@@ -1,5 +1,10 @@
 var UpdateLog = [
     [
+        "Beta 0.5",
+        "Depth 4.",
+        "Rebalanced Depth 3."
+    ],
+    [
         "Beta 0.4",
         "Depth 3.",
         "Rebalanced early game, making it faster."
@@ -45,13 +50,22 @@ var CurrentDepthEffect = [
       <span style="color: #ffaaaa;"> - Universe reset requirement x1e6 </span><br>
       - Upgrades that unlock other stages are cheaper <br>
       - All currency except Space foams gain a new effect `,
-    ` - 50x Universes gain <br>
+      ` - 50x Universes gain <br>
+        - The Molecules to Space effect is slightly better <br>
+        - Unlocks 3 new rows of Prestige upgrades <br>
+        <span style="color: #ffaaaa;"> - Nerfs to production (see each stage for effect)</span><br>
+        <span style="color: #ffaaaa;"> - Universe reset requirement x1e6 </span><br>
+        - Upgrades that unlock other stages are cheaper <br>
+        - All currency gain a new effect `,
+    ` - 250x Universes gain <br>
       - The Molecules to Space effect is slightly better <br>
       - Unlocks 3 new rows of Prestige upgrades <br>
       <span style="color: #ffaaaa;"> - Nerfs to production (see each stage for effect)</span><br>
       <span style="color: #ffaaaa;"> - Universe reset requirement x1e6 </span><br>
+      <span style="color: #ffaaaa;"> - Auto universe generation is disabled </span><br>
       - Upgrades that unlock other stages are cheaper <br>
-      - All currency gain a new effect `
+      - All currency gain a new effect <br>
+      - Unlocks the ability to fill metabars with resources `
 ]
 var NextDepthEffect = [
     "",
@@ -65,13 +79,17 @@ var NextDepthEffect = [
       - The Molecules to Space effect is slightly better <br>
       <span style="color: #ffaaaa;"> - Nerfs to production (see each stage for effect)</span><br>
       - All currency except Molecules gain a new effect `,
+    ` - 5x Universes gain <br>
+      <span style="color: #ffaaaa;"> - Nerfs to production (see each stage for effect)</span><br>
+      <span style="color: #ffaaaa;"> - Auto universe generation is disabled </span><br>
+      - Unlocks the ability to fill metabars with resources `,
     `To Be Continued`
 ]
 var DepthReq = [
     "Buy all current upgrades to go down 1 depth.",
     "Buy first 3 rows of upgrades to go down 1 depth. <br> (I'd recommend you to get a bit more upgrades.)",
-    "",
-    "",
+    "Buy all current upgrades to go down 1 depth.",
+    "Have all bars filled at once to go down 1 depth.",
     "",
     "",
     "None (You have reached max Depth!)"
@@ -89,24 +107,48 @@ function DepthEffect(dp, st){
     }
     if(dp==3){
         if(st==1){
-            let str = "This stage production is nerfed to /12.5 ^0.75 ";
+            let str = "This stage production is nerfed to /12.5 ^0.775 ";
             str += "<br> Your Space foams multiplies Planck Time's gain by "+(formatNumber(Math.pow(1+Player.stage1.spacefoam/1e20,0.15)))+"x";
             return str;
         }
         if(st==2){
-            let str = "This stage production is nerfed to /20 ^0.825 ";
+            let str = "This stage production is nerfed to /20 ^0.83 ";
             str += "<br> Your Planck Time multiplies Space Foams' gain by "+(formatNumber(Math.pow(1+Player.stage2.plancktime, 0.125)))+"x";
             str += "<br> Your Planck Time multiplies Relative Mass's gain by "+(formatNumber(Math.pow(1+Player.stage2.plancktime/1e20, 0.15)))+"x";
             return str;
         }
         if(st==3){
-            let str = "This stage production is nerfed to /250 ^0.75 ";
+            let str = "This stage production is nerfed to /25 ^0.75 ";
             str += "<br> Your Mass multiplies Planck Time's gain by "+(formatNumber(Math.pow(1+1e9*Player.stage3.mt, 0.15)))+"x";
             str += "<br> Your Mass multiplies Molecules' gain by "+(formatNumber(Math.pow(1+Player.stage3.mt/1e10, 0.2)))+"x";
             return str;
         }
         if(st==4){
             let str = "This stage production is nerfed to /5 ^0.85 ";
+            if(Player.stage4.upgrades[8]) str += "<br> Your Molecules multiplies Mass gain by "+(formatNumber(Math.pow(Player.stage4.mo+1, 0.25+0.05*(Player.depth >= 3))))+"x";
+            return str;
+        }
+    }
+    if(dp==4){
+        if(st==1){
+            let str = "This stage production is nerfed to /12.5 ^0.65 ";
+            str += "<br> Your Space foams multiplies Planck Time's gain by "+(formatNumber(Math.pow(1+Player.stage1.spacefoam/1e20,0.15)))+"x";
+            return str;
+        }
+        if(st==2){
+            let str = "This stage production is nerfed to /200 ^0.7 ";
+            str += "<br> Your Planck Time multiplies Space Foams' gain by "+(formatNumber(Math.pow(1+Player.stage2.plancktime, 0.125)))+"x";
+            str += "<br> Your Planck Time multiplies Relative Mass's gain by "+(formatNumber(Math.pow(1+Player.stage2.plancktime/1e20, 0.15)))+"x";
+            return str;
+        }
+        if(st==3){
+            let str = "This stage production is nerfed to /200 ^0.6 ";
+            str += "<br> Your Mass multiplies Planck Time's gain by "+(formatNumber(Math.pow(1+1e9*Player.stage3.mt, 0.15)))+"x";
+            str += "<br> Your Mass multiplies Molecules' gain by "+(formatNumber(Math.pow(1+Player.stage3.mt/1e10, 0.2)))+"x";
+            return str;
+        }
+        if(st==4){
+            let str = "This stage production is nerfed to /500 ^0.75 ";
             if(Player.stage4.upgrades[8]) str += "<br> Your Molecules multiplies Mass gain by "+(formatNumber(Math.pow(Player.stage4.mo+1, 0.25+0.05*(Player.depth >= 3))))+"x";
             return str;
         }
@@ -155,7 +197,7 @@ function render() {
     document.getElementById("dp").innerHTML = "Depth "+Player.depth;
     document.getElementById("currentdeptheffect").innerHTML = CurrentDepthEffect[Player.depth];
     document.getElementById("nextdeptheffect").innerHTML = NextDepthEffect[Player.depth];
-    document.getElementById("DepthReq").innerHTML = DepthReq[Player.depth];
+    document.getElementById("DepthReq").innerHTML = DepthReq[Player.depth-1];
     for(const i of non_meta_stage)document.getElementById("deffect"+i).innerHTML=DepthEffect(Player.depth, i);
 
     if(Player.depth >= 2)document.getElementById("pu2").style="display: flex;";
@@ -246,7 +288,7 @@ function render() {
     if(Player.prestige.upgrades2[8])document.getElementById("s4auto").className="fixedpurchasebutton"+(Player.stage4.auto?"-auto":"-nauto");
     else document.getElementById("s4auto").className="purchasebutton-auto-hidden";
     document.getElementById("s4auto").innerHTML = (Player.stage4.auto?"Auto ON":"Auto OFF");
-    document.getElementById("s4mult").innerHTML=""+formatNumber(Math.pow(2,Player.stage4.mult))+"x";
+    document.getElementById("s4mult").innerHTML=""+formatNumber(Math.pow(2+(Player.meta.filled_resource[3]>=1e41?0.1:0),Player.stage4.mult))+"x";
     document.getElementById("s4storedmult").innerHTML=""+formatNumber(Math.pow(1.6,Player.stage4.stored_mult))+"x";
     for (var i = 0; i < s4upgradeName.length; i++) {
         if (Player.stage4.upgrades[i] == 1) {
@@ -296,6 +338,15 @@ function render() {
     document.getElementById("depthbutton").className=(
         DepthGoDownReq()? "prestigebutton-colorchange" : "prestigebutton"
     );
+    
+    for(var i=0;i<Player.meta.filled_resource.length;i++){
+        var autoclass = "smallpurchasebutton";
+        autoclass += (Player.meta.filling[i]?"-auto":"-nauto");
+        document.getElementById("s10fill"+i).className = autoclass;
+        document.getElementById("s10fill"+i).innerHTML = (Player.meta.filling[i]?"Fill ON":"Fill OFF");
+    }
+    if(Player.depth<4)document.getElementById("s10rem").innerHTML="You have not gone deep enough to fill those bars.";
+    else document.getElementById("s10rem").innerHTML="";
 }
 
 function renderonBuy() {

@@ -17,7 +17,7 @@
         <div id="header" class="header">
             <div class="header-text" style="width: 470px;">Nullified Depths</div>
             <div style="width: 40px;"></div>
-            <div style="font-size: 22px;">Beta 0.3</div>
+            <div style="font-size: 22px;">Beta 0.5</div>
             <div style="width: 450px;"></div>
             <button class="smallbutton" style="position: relative;"
                 onclick="DisplaySaveOptions()">Save</button>
@@ -28,6 +28,9 @@
             <div class="stageselect">
                 <button id="button0" onclick="SetTab(0)" class="stagebutton">
                     <div id="dp" class="buttontext">Depths</div>
+                </button>
+                <button id="button10" onclick="SetTab(10)" class="stagebutton">
+                    <div id="mb" class="buttontext">Metabar</div>
                 </button>
                 <div>Main Layers</div>
                 <button id="button1" onclick="SetTab(1)" class="stagebutton">
@@ -124,6 +127,112 @@
                             <div> =-- Next Depth Effect --=</div>
                             <div style="height: 14px;"></div>
                             <div id="nextdeptheffect"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="stage10" class="stage">
+                    <div style="height: 70px;"></div>
+                    <div>
+                        <span class="buttontext"> Fill those bars with resources for boosts. </span><br>
+                        <span style="font-size: 12px;">You can have at most 2 metabars filling at a time.</span><br>
+                        <span id="s10rem" style="font-size: 12px;"></span>
+                    </div>
+                    <div style="height: 70px;"></div>
+                    <div style="height: 550px; display: flex; flex-direction: row; align-items: center; justify-content: space-evenly;">
+                        <div id="container0" style="height: 100%; width: 200px; display: flex; flex-direction: column; align-items: center;">
+                            <button id="s10fill0" class="smallpurchasebutton-nauto" onclick="s10fill(0)">Fill OFF</button>
+                            <div style="height: 10px;"></div>
+                            <div class="progress-container">
+                                <div class="progress-bar" id="s10pg0"></div>
+                            </div>
+                            <div style="height: 20px;"></div>
+                            <div style="font-size: 25px; text-align: center;">Universe</div>
+                            <div style="height: 10px;"></div>
+                            <div style="font-size: 17px; text-align: center;" id="s10pg0pg">0.00%</div>
+                            <div style="height: 7px;"></div>
+                            <div style="font-size: 10px; text-align: center;" id="s10pg0eff1">1</div>
+                            <div style="height: 7px;"></div>
+                            <div style="font-size: 10px; text-align: center;" id="s10pg0eff2">2</div>
+                            <div style="height: 7px;"></div>
+                            <div style="font-size: 10px; text-align: center;" id="s10pg0eff3">3</div>
+                            <div style="height: 7px;"></div>
+                            <div style="font-size: 10px; text-align: center;" id="s10pg0eff4">4</div>
+                        </div>
+                        <div id="container1" style="height: 100%; width: 200px; display: flex; flex-direction: column; align-items: center;">
+                            <button id="s10fill1" class="smallpurchasebutton-nauto" onclick="s10fill(1)">Fill OFF</button>
+                            <div style="height: 10px;"></div>
+                            <div class="progress-container">
+                                <div class="progress-bar" id="s10pg1"></div>
+                            </div>
+                            <div style="height: 20px;"></div>
+                            <div style="font-size: 25px; text-align: center;">Space</div>
+                            <div style="height: 10px;"></div>
+                            <div style="font-size: 17px; text-align: center;" id="s10pg1pg">0.00%</div>
+                            <div style="height: 7px;"></div>
+                            <div style="font-size: 10px; text-align: center;" id="s10pg1eff1">1</div>
+                            <div style="height: 7px;"></div>
+                            <div style="font-size: 10px; text-align: center;" id="s10pg1eff2">2</div>
+                            <div style="height: 7px;"></div>
+                            <div style="font-size: 10px; text-align: center;" id="s10pg1eff3">3</div>
+                            <div style="height: 7px;"></div>
+                            <div style="font-size: 10px; text-align: center;" id="s10pg1eff4">4</div>
+                        </div>
+                        <div id="container2" style="height: 100%; width: 200px; display: flex; flex-direction: column; align-items: center;">
+                            <button id="s10fill2" class="smallpurchasebutton-nauto" onclick="s10fill(2)">Fill OFF</button>
+                            <div style="height: 10px;"></div>
+                            <div class="progress-container">
+                                <div class="progress-bar" id="s10pg2"></div>
+                            </div>
+                            <div style="height: 20px;"></div>
+                            <div style="font-size: 25px; text-align: center;">Time</div>
+                            <div style="height: 10px;"></div>
+                            <div style="font-size: 17px; text-align: center;" id="s10pg2pg">0.00%</div>
+                            <div style="height: 7px;"></div>
+                            <div style="font-size: 10px; text-align: center;" id="s10pg2eff1">1</div>
+                            <div style="height: 7px;"></div>
+                            <div style="font-size: 10px; text-align: center;" id="s10pg2eff2">2</div>
+                            <div style="height: 7px;"></div>
+                            <div style="font-size: 10px; text-align: center;" id="s10pg2eff3">3</div>
+                            <div style="height: 7px;"></div>
+                            <div style="font-size: 10px; text-align: center;" id="s10pg2eff4">4</div>
+                        </div>
+                        <div id="container3" style="height: 100%; width: 200px; display: flex; flex-direction: column; align-items: center;">
+                            <button id="s10fill3" class="smallpurchasebutton-nauto" onclick="s10fill(3)">Fill OFF</button>
+                            <div style="height: 10px;"></div>
+                            <div class="progress-container">
+                                <div class="progress-bar" id="s10pg3"></div>
+                            </div>
+                            <div style="height: 20px;"></div>
+                            <div style="font-size: 25px; text-align: center;">Mass</div>
+                            <div style="height: 10px;"></div>
+                            <div style="font-size: 17px; text-align: center;" id="s10pg3pg">0.00%</div>
+                            <div style="height: 7px;"></div>
+                            <div style="font-size: 10px; text-align: center;" id="s10pg3eff1">1</div>
+                            <div style="height: 7px;"></div>
+                            <div style="font-size: 10px; text-align: center;" id="s10pg3eff2">2</div>
+                            <div style="height: 7px;"></div>
+                            <div style="font-size: 10px; text-align: center;" id="s10pg3eff3">3</div>
+                            <div style="height: 7px;"></div>
+                            <div style="font-size: 10px; text-align: center;" id="s10pg3eff4">4</div>
+                        </div>
+                        <div id="container4" style="height: 100%; width: 200px; display: flex; flex-direction: column; align-items: center;">
+                            <button id="s10fill4" class="smallpurchasebutton-nauto" onclick="s10fill(4)">Fill OFF</button>
+                            <div style="height: 10px;"></div>
+                            <div class="progress-container">
+                                <div class="progress-bar" id="s10pg4"></div>
+                            </div>
+                            <div style="height: 20px;"></div>
+                            <div style="font-size: 25px; text-align: center;">Molecule</div>
+                            <div style="height: 10px;"></div>
+                            <div style="font-size: 17px; text-align: center;" id="s10pg4pg">0.00%</div>
+                            <div style="height: 7px;"></div>
+                            <div style="font-size: 10px; text-align: center;" id="s10pg4eff1">1</div>
+                            <div style="height: 7px;"></div>
+                            <div style="font-size: 10px; text-align: center;" id="s10pg4eff2">2</div>
+                            <div style="height: 7px;"></div>
+                            <div style="font-size: 10px; text-align: center;" id="s10pg4eff3">3</div>
+                            <div style="height: 7px;"></div>
+                            <div style="font-size: 10px; text-align: center;" id="s10pg4eff4">4</div>
                         </div>
                     </div>
                 </div>

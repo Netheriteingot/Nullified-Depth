@@ -627,3 +627,19 @@ body {
     height: 64px;
     width: 64px;
 }
+.progress-container {
+    height: 60%;
+    width: 75px;
+    background-color: #0e0525;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column-reverse;
+}
+.progress-bar {
+    width: 75px;
+    height: 0; /* Start with 0 width */
+    background-color: #614caf; /* Green color */
+    transition: height 0.5s; /* Smooth transition */
+}

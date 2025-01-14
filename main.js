@@ -1,5 +1,5 @@
 var current_tab = -1;
-const current_stage = [0,1,2,3,4]
+const current_stage = [0,1,2,3,4,10]
 const non_meta_stage = [1,2,3,4]
 
 function DepthGoDownReq(){
@@ -13,6 +13,17 @@ function DepthGoDownReq(){
         for (var i = 0; i < 8; i++)flag *= Player.prestige.upgrades2[i];
         if (flag == 1) return true;
     }
+    if (Player.depth == 3){
+        let flag = 1;
+        for (var i = 0; i < 24; i++)flag *= Player.prestige.upgrades2[i];
+        if (flag == 1) return true;
+    }
+    if (Player.depth == 4){
+        return false; //
+        let flag = 1;
+        for (var i = 0; i <= 4; i++)flag *= (s10progress(i) >= 1? 1:0);
+        if (flag == 1) return true;
+    }
     return false;
 }
 function DepthGoDown() {
@@ -21,7 +32,9 @@ function DepthGoDown() {
         //Prestige();
         resetPlayer();
         if(Player.depth == 2)Player.prestige.uni = 1;
+        if(Player.depth == 4)Player.prestige.uni = 1;
         Player.prestige.uniresetcount = 0;
+        for(var i=0;i<Player.meta.filled_resource.length;i++)Player.meta.filled_resource[i]=0;
         UpdateButtons();
     }
 }
@@ -33,10 +46,12 @@ function StageUnlocked(stage) {
     if(stage==3)return Player.stage2.upgrades[22];
     if(stage==4){
         if(Player.depth <= 1)return false;
+        if(Player.depth >= 4)return true;
         if(!Player.prestige.upgrades2[0])return false;
         if(Player.stage3.upgrades[15] || Player.prestige.uniresetcount > 0)return true;
         return false;
     }
+    if(stage==10) return Player.prestige.upgrades2[21];
     return false;
 }
 
@@ -143,6 +158,14 @@ function mergePlayer(savedPlayer) {
     }
 
     newPlayer.prestige = Object.assign({}, startPlayer.prestige, newPlayer.prestige);
+
+    if (savedPlayer.meta) {
+        newPlayer.meta = Object.assign({}, newPlayer.meta, savedPlayer.meta);
+    } else {
+        newPlayer.meta = Object.assign({}, startPlayer.meta);
+    }
+
+    newPlayer.meta = Object.assign({}, startPlayer.meta, newPlayer.meta);
 
     console.log("newPlayer: ", newPlayer);
     return newPlayer;
@@ -330,6 +353,9 @@ document.addEventListener('keydown', handleCtrlS);
 /* --- Game Loop --- */
 
 function optickspeedmult(){
+
+    return 1; //TODO !!!!!!
+
     if(Player.op<0)return 1;
     else if(Player.op<600)return (1+(0.5+(600-Player.op)/800)*Math.pow(Player.op,0.4));
     return (1+0.5*Math.pow(Player.op,0.3));

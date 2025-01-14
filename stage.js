@@ -38,6 +38,10 @@ const startPlayer = {
         timespent: 0,
         fastestrate: 0
     },
+    meta: {
+        filled_resource: [0,0,0,0,0],
+        filling: [0,0,0,0,0]
+    },
     timestamp: 0,
     op: 0,
     version: 2
@@ -63,7 +67,16 @@ const Player_para = {
     },
     prestige: {
         upgrade_cost: [1,2,2,2,3,3,3,17,2,16,48,10,40,15,64,37],
-        upgrade_cost2: [1,2e2,1e2,1e2,1e2,1e2,8e2,3.2e3,3e2,6e2,1.2e3,2.4e3,1e3,2e3,4e3,8e3,8e2,1.2e3,1.6e3,1.6e3,3.2e3,1e100,1e4,3e4]
+        upgrade_cost2: [1,2e2,1e2,1e2,1e2,1e2,8e2,3.2e3,3e2,6e2,1.2e3,2.4e3,1e3,2e3,4e3,8e3,8e3,1.2e4,1.6e4,1.6e4,3.2e4,1e5,1e4,3e4]
+    },
+    meta: {
+        bar_milestone_req: [
+            [0,316.228,1e11,1e15],
+            [0,1e8,1e75,1e100],
+            [0,1e15,1e85,1e100],
+            [0,3.16228e-7,1e41,1e41],
+            [0,1e50,1e50,1e50]
+        ]
     }
 };
 const s1upgradeName = new Array("I", "II", "III", "1st Dimension", "Spacial Combination", "IV", "V", "2nd Dimension", "Spacial Rearrangement", "VI", "3rd Dimension", "4th Dimension", "Euler's Theorem", "Fractals", "Spacial Concatenation", "Timelapse", "Auto 1", "Auto 2", "Auto 3", "Auto 4");
@@ -128,7 +141,7 @@ const s2upgradeEffect = new Array(
     "Increases Planck Time production based on time spent this reset again.",
     "You gain a bit more Time Extensions again.",
     "Multiply your Planck Time gain by x1.075 per level! A small gift from the developer!",
-    "First 4 columns of upgrades' base +1.03.",
+    "First 4 columns of upgrades' base +0.03.",
     "Multiply your Planck Time gain by x1.45 per level!",
     "Multiply your Planck Time gain by x1.45 per level!",
     "Multiply your Planck Time gain by x1.45 per level!",
@@ -292,11 +305,11 @@ const pr2upgradeEffect = new Array(
     "Add 0.15 to base Universe gain per OoM of Relative Mass.",
     "Add 0.4 to base Universe gain per OoM of Molecules.",
     "x2 gain on first 4 stages, ignoring any in-stage softcaps.",
-    "x3 gain on first 4 stages, ignoring any in-stage softcaps.",
+    "^1.05 gain on first 4 stages.",
     "x3 gain on all structures in Space stage.",
     "You get x1.5 Time Extensions in Time stage.",
     "Multipliers affect Mass gain at a reduced rate, less affected by stage 3 softcap.",
-    "null",
+    "Unlock Metabar stage.",
     "Stored Multipliers multiply Universe gain at a reduced rate. (x1.1 per Stored Mult.)",
     "Passively produce universes at 25% of your fastest rate."
 );
@@ -332,12 +345,20 @@ const s3rows = [0, 1, 2];
 const s4rows = [0, 1, 2];
 const prrows = [0, 1, 2];
 const pr2rows = [0, 1, 2, 3];
+const s10effectunlockpercentage=[[12.5,55,75],[8,75,100],[15,85,100],[5,100,100],[100,100,100]];
 
 // Log the startPlayer object to the console
 console.log("startPlayer:", startPlayer);
 console.log("startPlayer.buy:", startPlayer.buy);
 
 var Player = startPlayer;
+
+function GlobalSpeed(){
+    var gsp = 1;
+    if(Player.meta.filled_resource[0]>=316.228) gsp *= Math.pow(Math.log10(Player.meta.filled_resource[0]),1.5);
+    if(Player.meta.filled_resource[3]>=3.16228e-7) gsp *= Math.pow(9+Math.log10(Player.meta.filled_resource[3]),0.75);
+    return gsp;
+}
 
 function s1buildingscost(idx) {
     let info = {
@@ -427,7 +448,6 @@ function s1prod(idx) {
     if(Player.prestige.upgrades[4])for(var i=0;i<5;i++)prod[i]*=1.5;
     if(Player.prestige.upgrades2[1])prod[0] *= 2;
     if(Player.prestige.upgrades2[16])prod[0] *= 2;
-    if(Player.prestige.upgrades2[17])prod[0] *= 3;
     if(Player.prestige.upgrades2[2])prod[0] *= 3;
     if(Player.prestige.upgrades2[18])for(var i=0;i<5;i++)prod[i]*=3;
     if (Player.stage1.upgrades[4]) prod[0] *= Math.pow(1.02, Player.stage1.buildingsbought[0]);
@@ -451,14 +471,22 @@ function s1prod(idx) {
     if(Player.stage4.upgrades[15]) prod[0] *= 1.3;
     if(Player.depth >= 2)prod[0] *= Math.pow(1+Player.stage2.plancktime, 0.125);
     if(Player.depth == 2)prod[0] = Math.pow(prod[0], 0.9);
-    else if(Player.depth >= 3) prod[0] = Math.pow(prod[0], 0.75);
+    else if(Player.depth == 3) prod[0] = Math.pow(prod[0], 0.775);
+    else if(Player.depth >= 4) prod[0] = Math.pow(prod[0], 0.65);
     if(Player.depth >= 2)prod[0] *= 0.08;
+    if(Player.depth >= 4)prod[0] = Math.pow(prod[0],1+0.006*Math.pow(10+Math.log10(1e-9+Player.meta.filled_resource[3]),0.5));
+    if(Player.prestige.upgrades2[17])prod[0] = Math.pow(prod[0],1.05);
+    if(Player.meta.filled_resource[4]>=9.99e49)prod[0]=Math.pow(prod[0],1.01);
+    for(var i=0;i<5;i++)prod[i]*=GlobalSpeed();
     return prod[idx];
 }
 function s1DoEveryCycle() {
     for (var i = 3; i >= 0; i--)Player.stage1.buildings[i] += s1prod(i + 1) / 20 * optickspeedmult();
     Player.stage1.spacefoam += s1prod(0) / 20 * optickspeedmult();
-    if (Player.stage1.upgrades[13]) Player.stage1.buildings[4] += Math.pow(s1prod(4), 0.5) / 20 * optickspeedmult();
+    var b4prod = 0;
+    if (Player.stage1.upgrades[13]) b4prod = Math.pow(s1prod(4), 0.5);
+    if(Player.meta.filled_resource[0]>=1e11)b4prod=Math.pow(b4prod,1.25);
+    Player.stage1.buildings[4] += b4prod / 20 * optickspeedmult() *GlobalSpeed();
     if (Player.stage1.upgrades[3]) Player.stage1.buildingsunlocked[1] = 1;
     if (Player.stage1.upgrades[7]) Player.stage1.buildingsunlocked[2] = 1;
     if (Player.stage1.upgrades[10]) Player.stage1.buildingsunlocked[3] = 1;
@@ -669,7 +697,7 @@ function tps(){
     if(Player.prestige.upgrades[5])prod*=2.3;
     if(Player.prestige.upgrades2[1])prod *= 2;
     if(Player.prestige.upgrades2[16])prod *= 2;
-    if(Player.prestige.upgrades2[17])prod *= 3;
+    if(Player.prestige.upgrades2[17])prod = Math.pow(prod,1.05);
     if(Player.prestige.upgrades2[3])prod *= 2.2;
     prod*=Math.pow(Player.stage2.tsitex+1,0.18*Player.stage2.upgrades[4]+0.1*Player.stage2.upgrades[12]+0.1*Player.stage2.upgrades[20]);
     if(Player.stage4.upgrades[4]) prod *= 1.3;
@@ -683,14 +711,24 @@ function tps(){
     if(Player.depth >= 2)prod *= Math.pow(1+1e9*Player.stage3.mt, 0.15);
     if(Player.depth >= 3)prod *= Math.pow(1+Player.stage1.spacefoam/1e20,0.15);
     if(Player.depth == 2)prod = Math.pow(prod, 0.9);
-    else if(Player.depth >= 3)prod = Math.pow(prod, 0.825);
+    else if(Player.depth == 3)prod = Math.pow(prod, 0.83);
+    else if(Player.depth >= 4)prod = Math.pow(prod, 0.7);
     if(Player.depth >= 2)prod *= 0.2;
     if(Player.depth >= 3)prod *= 0.25;
+    if(Player.depth >= 4)prod *= 0.1;
+    if(Player.depth >= 4)prod = Math.pow(prod,1+0.006*Math.pow(1+Math.log10(1+Player.meta.filled_resource[4]),0.5));
+    if(Player.prestige.upgrades2[17])prod = Math.pow(prod,1.05);
+    if(Player.meta.filled_resource[0]>=1e15)prod = Math.pow(prod,1.06);
+    if(Player.meta.filled_resource[1]>=9.99e99)prod = Math.pow(prod,1.045);
+    if(Player.meta.filled_resource[2]>=1e15)prod = Math.pow(prod,1.049);
+    if(Player.meta.filled_resource[3]>=1e41)prod = Math.pow(prod,1.021);
+    if(Player.meta.filled_resource[4]>=9.99e49)prod = Math.pow(prod,1.01);
+    prod*=GlobalSpeed();
     return prod;
 }
 
 function s2DoEveryCycle(){
-    Player.stage2.tsitex+=0.05;
+    Player.stage2.tsitex+=0.05*GlobalSpeed();
     Player.stage2.plancktime+=tps()/20*optickspeedmult();
     if(Player.prestige.upgrades[7]) Player.stage2.tex += Math.max(0, (calcs2PrestigeGain()-Player.stage2.tex)/2000);
     if(Player.prestige.upgrades[15]) Player.stage2.tex += Math.max(0, (calcs2PrestigeGain()-Player.stage2.tex)/1000);
@@ -866,7 +904,7 @@ function s3prod(){
     if(Player.prestige.upgrades[6])prod*=2.4;
     if(Player.prestige.upgrades2[1])prod *= 2;
     if(Player.prestige.upgrades2[16])prod *= 2;
-    if(Player.prestige.upgrades2[17])prod *= 3;
+    if(Player.prestige.upgrades2[17])prod = Math.pow(prod,1.05);
     if(Player.prestige.upgrades2[4])prod *= 2.7;
     if(prod>1e8){
         if(Player.stage3.upgrades[14])prod=10*Math.pow(prod,0.875);
@@ -887,16 +925,21 @@ function s3prod(){
     if(Player.stage4.upgrades[8])prod*=Math.pow(Player.stage4.mo+1, 0.25+0.05*(Player.depth >= 3));
     if(Player.depth >= 3)prod*=Math.pow(1+Player.stage2.plancktime/1e20, 0.15);
     if(Player.depth == 2)prod = 1e-9*Math.pow(prod*1e9, 0.9);
-    else if(Player.depth >= 3)prod = 1e-9*Math.pow(prod*1e9, 0.75);
+    else if(Player.depth == 3)prod = 1e-9*Math.pow(prod*1e9, 0.75);
+    else if(Player.depth >= 3)prod = 1e-9*Math.pow(prod*1e9, 0.6);
     if(Player.depth >= 2)prod *= 0.08;
-    if(Player.depth >= 3)prod *= 0.05;
+    if(Player.depth >= 3)prod *= 0.5;
+    if(Player.depth >= 4)prod *= 0.125;
+    if(Player.depth >= 4)prod = 1e-9*Math.pow(prod*1e9,1+0.015*Math.pow(1+Math.log10(1+Player.meta.filled_resource[1]),0.5));
+    if(Player.prestige.upgrades2[17])prod = 1e-9*Math.pow(prod*1e9, 1.05);
+    prod*=GlobalSpeed();
     return prod;
 }
 
 function s3DoEveryCycle(){
     Player.stage3.mt+=s3prod()/20*optickspeedmult();
-    if(Player.stage3.upgrades[11])Player.stage3.buildings[0]+=(Math.pow(Math.pow(3,Player.stage3.buildings[3]),0.5*Player.stage3.upgrades[6]))*(Player.stage3.buildings[1]*(Player.stage3.buildingsbought[1]))*(Math.pow(1+Player.stage3.buildings[0],0.4*Player.stage3.upgrades[12]))/1000/**optickspeedmult()*/;
-    Player.stage3.buildings[1]+=(Math.pow(3,Player.stage3.buildings[2])-1)*(Math.pow(Math.pow(3,Player.stage3.buildings[3]),0.25*Player.stage3.upgrades[6]))/1000*optickspeedmult();
+    if(Player.stage3.upgrades[11])Player.stage3.buildings[0]+=(Math.pow(Math.pow(3,Player.stage3.buildings[3]),0.5*Player.stage3.upgrades[6]))*(Player.stage3.buildings[1]*(Player.stage3.buildingsbought[1]))*(Math.pow(1+Player.stage3.buildings[0],0.4*Player.stage3.upgrades[12]))/1000*optickspeedmult()*GlobalSpeed();
+    Player.stage3.buildings[1]+=(Math.pow(3,Player.stage3.buildings[2])-1)*(Math.pow(Math.pow(3,Player.stage3.buildings[3]),0.25*Player.stage3.upgrades[6]))/1000*optickspeedmult()*GlobalSpeed();
     for(var i=0;i<4;i++)if(Player.stage3.auto[i])purchases3buildings(i);
 }
 
@@ -1002,13 +1045,18 @@ function s4prod(){
     if(Player.stage4.upgrades[15]) prod *= 1.3;
     if(Player.prestige.upgrades2[1])prod *= 2;
     if(Player.prestige.upgrades2[16])prod *= 2;
-    if(Player.prestige.upgrades2[17])prod *= 3;
+    if(Player.prestige.upgrades2[17])prod = Math.pow(prod,1.05);
     if(Player.prestige.upgrades2[5])prod *= 3;
-    prod *= Math.pow(2,Player.stage4.mult);
+    prod *= Math.pow(2+(Player.meta.filled_resource[3]>=1e41?0.1:0),Player.stage4.mult);
     prod *= Math.pow(1.6,Player.stage4.stored_mult);
     if(Player.depth >= 3)prod *= Math.pow(1+Player.stage3.mt/1e10, 0.2);
-    if(Player.depth >= 3)prod = Math.pow(prod, 0.85);
+    if(Player.depth == 3)prod = Math.pow(prod, 0.85);
+    else if(Player.depth >= 3)prod = Math.pow(prod, 0.75);
     if(Player.depth >= 3)prod *= 0.2;
+    if(Player.depth >= 4)prod *= 0.01;
+    if(Player.depth >= 4)prod = Math.pow(prod,1+0.02*Math.pow(1+Math.log10(1+Player.meta.filled_resource[2]),0.5));
+    if(Player.prestige.upgrades2[17])prod = Math.pow(prod,1.05);
+    prod*=GlobalSpeed();
     return prod;
 }
 
@@ -1050,8 +1098,10 @@ function resetPlayer(){
     Player.stage4.mo=0;
     Player.stage4.mult=0;
     Player.stage4.stored_mult=0;
+    for(var i=1;i<=4;i++)Player.meta.filled_resource[i]=0;
 }
 function UniReq(){
+    if(Player.depth == 4) return 6.02e32;
     if(Player.depth == 3) return 6.02e32;
     if(Player.depth == 2) return 6.02e32;
     else return 6.02e26;
@@ -1076,6 +1126,12 @@ function UniGain(){
     if(Player.prestige.upgrades2[22]) gain *= Math.pow(1.1, Player.stage4.stored_mult);
     if(Player.depth >= 2) gain *= 10;
     if(Player.depth >= 3) gain *= 5;
+    if(Player.depth >= 4) gain *= 5;
+    gain *= Math.pow(Player.meta.filled_resource[0]+1,0.1);
+    if(Player.meta.filled_resource[2]>=9.99e99)gain *= 5.4321;
+    if(Player.meta.filled_resource[2]>=1e85)gain *= Math.max(1,Math.log10(Player.meta.filled_resource[2])-80);
+    if(Player.meta.filled_resource[1]>=1e75)gain = Math.pow(gain,1.5);
+    if(Player.meta.filled_resource[4]>=9.99e49)gain = Math.pow(gain,1.1);
     return gain;
 }
 
@@ -1141,6 +1197,135 @@ function hoverpr2upgrades(idx) {
         `<span>` + formatNumber(calcpr2upgradecost(idx)) + ` Universes</span>`;
 }
 setInterval(function(){
-    if(Player.prestige.upgrades2[23]) Player.prestige.uni += Player.prestige.fastestrate / 80;
+    if(Player.prestige.upgrades2[23] && Player.depth <= 3) Player.prestige.uni += Player.prestige.fastestrate / 80;
     Player.prestige.timespent += 0.05;
+},50);
+
+/* --- Meta --- */
+
+function s10fill(idx){
+    var totalfill = 0;
+    Player.meta.filling[idx] = 1-Player.meta.filling[idx];
+    for(var i=0;i<Player.meta.filling.length;i++)totalfill+=Player.meta.filling[i];
+    if(totalfill>=3)Player.meta.filling[idx] = 1-Player.meta.filling[idx];
+}
+function s10respectresource(idx){
+    if(idx==0)return Player.prestige.uni;
+    if(idx==1)return Player.stage1.spacefoam;
+    if(idx==2)return Player.stage2.plancktime;
+    if(idx==3)return Player.stage3.mt;
+    if(idx==4)return Player.stage4.mo;
+}
+function s10progress(idx){
+    if(idx==0){
+        if(Player.meta.filled_resource[idx]>=1e20)return 1;
+        else return 0.05 * Math.log10(1+Player.meta.filled_resource[idx]);
+    }
+    if(idx==1){
+        if(Player.meta.filled_resource[idx]>=1e100)return 1;
+        else return 0.01 * Math.log10(1+Player.meta.filled_resource[idx]);
+    }
+    if(idx==2){
+        if(Player.meta.filled_resource[idx]>=1e100)return 1;
+        else return 0.01 * Math.log10(1+Player.meta.filled_resource[idx]);
+    }
+    if(idx==3){
+        if(Player.meta.filled_resource[idx]>=1e41)return 1;
+        else return 0.18 + 0.02 * Math.log10(1e-9+Player.meta.filled_resource[idx]);
+    }
+    if(idx==4){
+        if(Player.meta.filled_resource[idx]>=1e50)return 1;
+        else return 0.02 * Math.log10(1+Player.meta.filled_resource[idx]);
+    }
+    return 0;
+}
+function s10effectwords(idx, mil){
+    if(idx==0){
+        if(mil==1)return "Global speed x"+(Math.pow(Math.log10(Player.meta.filled_resource[0]),1.5)).toFixed(2);
+        if(mil==2)return "Tesseract self-production ^1.25";
+        if(mil==3)return "Planck Time gain ^1.06";
+    }
+    if(idx==1){
+        if(mil==1)return "Gain universes passively";
+        if(mil==2)return "Universe gain from reset ^1.5";
+        if(mil==3)return "Planck Time gain ^1.045";
+    }
+    if(idx==2){
+        if(mil==1)return "Planck Time gain ^1.049";
+        if(mil==2)return "Universe gain x"+(Math.max(1,Math.log10(Player.meta.filled_resource[2])-80)).toFixed(2);
+        if(mil==3)return "Universe gain x5.4321";
+    }
+    if(idx==3){
+        if(mil==1)return "Global speed x"+(Math.pow(9+Math.log10(Player.meta.filled_resource[3]),0.75)).toFixed(2);
+        if(mil==2)return "Multiplier effect base +0.1";
+        if(mil==3)return "Planck Time gain ^1.021";
+    }
+    if(idx==4){
+        if(mil==1)return "Space Foam gain ^1.01";
+        if(mil==2)return "Planck Time gain ^1.01";
+        if(mil==3)return "Universe gain ^1.1";
+    }
+    return "";
+}
+function s10effect(idx, mil){
+    if(Player.meta.filled_resource[idx] < Player_para.meta.bar_milestone_req[idx][mil])return "??? ("+s10effectunlockpercentage[idx][mil-1]+"%)";
+    if(mil!=0){
+        return s10effectwords(idx,mil);
+    }
+    else{
+        if(idx==0)return "Universe gain x"+formatNumber(Math.pow(Player.meta.filled_resource[0]+1,0.1));
+        if(idx==1)return "Relative Mass gain ^"+(1+0.015*Math.pow(1+Math.log10(1+Player.meta.filled_resource[1]),0.5)).toFixed(3);
+        if(idx==2)return "Molecules gain ^"+(1+0.02*Math.pow(1+Math.log10(1+Player.meta.filled_resource[2]),0.5)).toFixed(3);
+        if(idx==3)return "Space Foam gain ^"+(1+0.006*Math.pow(10+Math.log10(1e-9+Player.meta.filled_resource[3]),0.5)).toFixed(3);
+        if(idx==4)return "Planck Time gain ^"+(1+0.006*Math.pow(1+Math.log10(1+Player.meta.filled_resource[4]),0.5)).toFixed(3);
+    }
+    return "";
+}
+function s10fillres(idx){
+    if(Player.depth < 4)return;
+    if(idx==0){
+        Player.meta.filled_resource[idx]+=0.003*Player.prestige.uni;
+        Player.prestige.uni*=0.997;
+        if(Player.meta.filled_resource[idx]>=1e20)Player.meta.filled_resource[idx]=1e20;
+    }
+    if(idx==1){
+        Player.meta.filled_resource[idx]+=0.003*Player.stage1.spacefoam;
+        Player.stage1.spacefoam*=0.997;
+        if(Player.meta.filled_resource[idx]>=1e100)Player.meta.filled_resource[idx]=1e100;
+    }
+    if(idx==2){
+        Player.meta.filled_resource[idx]+=0.003*Player.stage2.plancktime;
+        Player.stage2.plancktime*=0.997;
+        if(Player.meta.filled_resource[idx]>=1e100)Player.meta.filled_resource[idx]=1e100;
+    }
+    if(idx==3){
+        Player.meta.filled_resource[idx]+=0.003*Player.stage3.mt;
+        Player.stage3.mt*=0.997;
+        if(Player.meta.filled_resource[idx]>=1e41)Player.meta.filled_resource[idx]=1e41;
+    }
+    if(idx==4){
+        Player.meta.filled_resource[idx]+=0.003*Player.stage4.mo;
+        Player.stage4.mo*=0.997;
+        if(Player.meta.filled_resource[idx]>=1e50)Player.meta.filled_resource[idx]=1e50;
+    }
+}
+setInterval(function(){
+    for(var i=0;i<Player.meta.filled_resource.length;i++){
+        let progressBar = document.getElementById("s10pg"+i);
+        let height = s10progress(i);
+        progressBar.style.height=((height*100))+"%";
+        document.getElementById("s10pg"+i+"pg").innerHTML=((height*1e2).toFixed(2))+"%";
+        if(Player.meta.filling[i]) s10fillres(i);
+        for(var j=0;j<4;j++)document.getElementById("s10pg"+i+"eff"+(j+1)).innerHTML=s10effect(i,j);
+    }
+    if(Player.meta.filled_resource[1]>=1e8){
+        let gain = 0;
+        gain += 0.05*Math.log(1+Player.stage1.spacefoam);
+        gain += 0.05*Math.log(1+Player.stage2.plancktime);
+        gain += 0.3*Math.log(Math.max(1,1+Player.stage3.mt));
+        gain += 0.1*Math.log(1+Player.stage4.mo);
+        gain *= Math.pow(Player.meta.filled_resource[0]+1,0.1);
+        gain *= GlobalSpeed();
+        Player.prestige.uni += gain/20*optickspeedmult();
+    }
 },50);

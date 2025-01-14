@@ -354,7 +354,7 @@ document.addEventListener('keydown', handleCtrlS);
 
 function optickspeedmult(){
 
-    return 1; //TODO !!!!!!
+    //return 1; //TODO !!!!!!
 
     if(Player.op<0)return 1;
     else if(Player.op<600)return (1+(0.5+(600-Player.op)/800)*Math.pow(Player.op,0.4));
